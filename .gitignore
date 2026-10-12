@@ -11,3 +11,4 @@ docs/discovery/contacts.md
 pipelines/dbt/target/
 pipelines/dbt/logs/
 logs/
+.user.yml
