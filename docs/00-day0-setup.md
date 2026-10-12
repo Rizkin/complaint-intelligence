@@ -11,7 +11,7 @@
 | 5 | GCP project, us-central1, $10 budget, 1-instance cap | TODO | Billing account must be set up by hand. |
 | 6 | $15 OpenRouter credit | DONE | Prepaid, hard stop. |
 | 7 | Ollama + small instruct model | DONE | `qwen3.5:2b` (2.7 GB), ~25 tok/s on RTX 3050 4 GB, JSON mode works. |
-| 8 | Docker Desktop on WSL2, repos in WSL2 fs | IN PROGRESS | Repo at `~/complaint-intelligence` in Ubuntu WSL2. |
+| 8 | Docker Desktop on WSL2, repos in WSL2 fs | DONE | Docker 29.8.2 + Compose v5.5.1 in Ubuntu WSL2. Containers reach host Ollama via `--add-host=host.docker.internal:host-gateway`. |
 | 9 | Kaggle token + GitHub repo | PARTIAL | Repo created. Kaggle token still to add. |
 | 10 | 15 discovery contacts | TODO | `docs/discovery/contacts.md` (keep out of git if it has personal details). |
 
