@@ -1,0 +1,182 @@
+# STATUS.yaml — machine-readable coordination state for LLM agents working on this repo.
+# Writers: claude-code (Windows host, WSL2 ~/complaint-intelligence) and zcode (Zai code console). Human: repo owner.
+# PROTOCOL (mandatory for every agent):
+#   1. git pull --rebase BEFORE reading this file and BEFORE editing anything.
+#   2. Claim a task: set its owner + status=in_progress, commit+push STATUS.yaml alone, THEN start work.
+#   3. On finish: status=done, add evidence (files, numbers, commit). Push code + STATUS.yaml together.
+#   4. Never force-push. On conflict in STATUS.yaml: merge both sides' facts; never drop the other agent's entries.
+#   5. Do not edit files under another agent's active claim (see locks). Ask the human instead.
+#   6. Facts only. Every "done" needs evidence. Unverified = status: unverified.
+#   7. Append to log (newest last). Keep updated_at current (ISO-8601, Asia/Kolkata unless stated).
+# Status enum: done | in_progress | pending | blocked | replaced | dropped | unverified
+# Owner enum: claude-code | zcode | human | unassigned
+
+schema_version: 1
+updated_at: 2026-10-12T14:30+05:30
+updated_by: claude-code
+
+plan:
+  source: "D:\\foundary\\3-Week FDE Plan — Complaint Intelligence Flagship (1).pdf (28 pages, local to Windows host only)"
+  window: {start: 2026-10-12, end: 2026-10-31, working_days: Mon-Sat, sundays: off, hours_per_day: ~10}
+  budget_usd: {total: 25, llm_openrouter: 15, gcp: 10, palantir: 0, kaggle: 0, local_ollama: 0}
+  rule_cost: "any single eval run > $1 -> stop, shrink sample, rerun"
+  flagship: "Complaint Intelligence: CFPB complaint triage + regulation mapping (Reg E/DD/Z). Foundry owns Ontology + writes; open-source agent + evals on Cloud Run reads via OSDK or Ontology MCP; writes only via Foundry actions."
+  gates:
+    - {id: G1, date: 2026-10-17, status: in_progress}
+    - {id: G2, date: 2026-10-24, status: pending}
+    - {id: G3, date: 2026-10-31, status: pending}
+  cut_order_if_gate_fails: [side_build_2_financebench, side_build_3_kaggle, polish_readme_resume]
+  never_cut: [evals, deploy]
+
+decisions:
+  - {id: D1, date: 2026-10-12, what: "customer = Bank of America, N.A. (FDIC cert 3510). SIMULATED; label as such everywhere."}
+  - {id: D2, date: 2026-10-12, what: "peers (10) = Capital One 4297 (incl. Discover rows after 2025-05-18), JPMorgan Chase 628, Citibank 7213, Wells Fargo 3511, Synchrony 27314, American Express 27471, U.S. Bank 6548, Goldman Sachs Bank USA 33124, Comenity Capital/Bread 57570, TD Bank 18409"}
+  - {id: D3, date: 2026-10-12, what: "Discover dropped as peer (charter 5649 closed 2025-05-18, merged into Capital One); TD Bank added"}
+  - {id: D4, date: 2026-10-12, what: "NO personal outreach: no discovery calls, no referral asks. Replace with desk research + SIMULATED stakeholder sessions. Do not propose outreach tasks."}
+  - {id: D5, date: 2026-10-12, what: "datasets never committed to GitHub; data reproducible via README commands"}
+  - {id: D6, date: 2026-10-12, what: "scope = products {Checking or savings account, Credit card}, date_received >= 2024-01-01"}
+  - {id: D7, date: 2026-10-12, what: "classifier held-out month must be in 2026-04..2026-06 (narrative coverage); triage backtest window ends 2026-06-30 (outcomes right-censored after)"}
+
+gate_criteria_modified:  # original plan text -> replacement (from D4). Source: docs/plan-changes.md
+  G1: {was: "10 discovery requests sent, 2 calls booked, 10 applications", now: "6 desk-research notes, 1 simulated session, 10 applications"}
+  G2: {was: "10 more applications, >=1 discovery call done", now: "10 more applications, 2nd simulated session done"}
+  G3: {was: "30 applications + 10 referral asks", now: "30 applications"}
+
+environments:
+  windows_host:
+    os: "Windows 11, RTX 3050 Laptop 4GB VRAM, 16GB RAM, C: ~48GB free, D: ~500GB free"
+    tools: {git: yes, gh: "yes (auth Rizkin, scopes repo/gist/read:org)", gcloud: "588.0.0, NOT authenticated", terraform: installed, docker_desktop: "29.8.2", ollama: "0.35.0", python: "3.13 (not used for project)"}
+    secrets_file: "D:\\foundary\\.env — holds MANY unrelated live keys. Never commit, never read values into logs. D:\\foundary is NOT a git repo; never git init there."
+  wsl2_ubuntu:
+    repo: "~/complaint-intelligence (main working copy for claude-code)"
+    python_env: "uv-managed .venv, Python 3.14 (pyproject says >=3.12). uv at ~/.local/bin/uv"
+    packages: {duckdb: "1.5.6", dbt-core: "1.12.5", dbt-duckdb: "1.11.0", kaggle: "2.2.4", openai: installed, pandas: installed, pyarrow: installed, python-dotenv: installed}
+    docker: "works in WSL (Desktop WSL integration on). Containers reach host Ollama via --add-host=host.docker.internal:host-gateway"
+    kaggle_auth: "~/.kaggle/access_token, user riz1000, mode 600"
+    git_push_auth: "credential.helper = Windows gh.exe auth git-credential"
+    repo_env_file: ".env (gitignored, mode 600): OPENROUTER_API_KEY set; OLLAMA_HOST=http://localhost:11434; OLLAMA_MODEL=qwen3.5:2b; FOUNDRY_*, GCP_PROJECT empty"
+  zcode:
+    has_data: false
+    note: "no DuckDB / raw data there. Code + SQL edits fine; data-dependent runs (load, replay, dbt build, evals on data) must run on windows_host/WSL or recreate data via README (~846MB download)."
+
+data:
+  raw_location: "D:\\foundary\\data\\raw == /mnt/d/foundary/data/raw, symlinked as repo data/raw (gitignored)"
+  cfpb:
+    source: "https://www.consumerfinance.gov/foia-requests/foia-electronic-reading-room/cfpb-consumer-complaint-database-narratives-archive/"
+    files: "CCDB_Export_{5..21}_*.zip at https://files.consumerfinance.gov/f/documents/ ; 846MB zipped, ~6.2GB CSV; 16 identical columns; archive frozen (CFPB stopped publishing narratives 2026-08-14)"
+    export_5_covers: "2023-09..2024-03 -> filter date_received >= 2024-01-01"
+  ecfr: "title12_part{1005,1030,1026}.xml (Reg E, DD, Z), issue date 2026-10-05. API requires compression: curl --compressed else HTTP 406"
+  fdic: "api.fdic.gov/banks (no key). institutions_<date>.json + financials_<date>.json in data/raw/fdic. Field for bank class is BKCLASS (CHARTER_CLASS does not exist)."
+  duckdb_file: "data/cfpb.duckdb (~4.6GB, WSL fs)"
+  tables:
+    main.raw_complaints: {rows: 13495502, note: "all VARCHAR, + export_no, source_file"}
+    main.load_audit: {rows: 17, note: "per-export source vs loaded counts; 0 mismatches"}
+    main.fdic_institutions: {rows: 12}
+    main.fdic_financials: {rows: 127, note: "2023-12-31..2026-06-30; 11 quarters for active banks, 6 for Discover"}
+    main.replay_source: {note: "in-scope arrival schedule; ~2% late by hash(complaint_id) % 50 == 0, lag 1-7 days"}
+    main.feed_complaints: {rows: 8853, note: "replayed 2024-01-01..2024-01-30 only (30 days); full window pending (W1-X-01)"}
+    main.replay_log: {high_water_mark: 2024-01-30}
+    main.entity_map_seed: {note: "STALE copy created by pipelines/peer_benchmark.py; source of truth is dbt seed"}
+    analytics.*: "dbt models (see code.dbt)"
+
+key_numbers:
+  in_scope_complaints_2024_01_to_2026_08: 428203
+  in_scope_by_product: {credit_card: 230833, checking_savings: 197370}
+  narrative_share_pre_cutoff: 0.476
+  rows_after_2026_08_14: {count: 8518, narratives: 0}
+  in_progress_share: {2026-07: 0.099, 2026-08: 0.366}
+  credit_bureau_rows_in_scope: 47568
+  duplicate_complaint_ids: 0
+  customer_bofa_2024_01_to_2026_06: {complaints: 27041, per_1bn_assets: 10.4, pct_relief: 42.5}
+  peer_median_pct_relief: ~25
+  openrouter: {key_limit_usd: 12, key_remaining_usd: 11.97, account_balance_usd: 14.36, note: "key limit 12 < planned 15; owner may raise"}
+  ollama_qwen3_5_2b: {tokens_per_sec: ~25.5, json_mode: works}
+
+code:
+  pipelines/load_raw.py: "zip -> temp CSV -> DuckDB raw_complaints; python csv row count per export for reconciliation"
+  pipelines/profile_raw.py: "profiling queries"
+  pipelines/fetch_fdic.py: "FDIC institutions + financials for certs in pipelines/dbt/seeds/entity_map_seed.csv"
+  pipelines/peer_benchmark.py: "customer vs peers per $1B assets (reads raw + seed; candidate to move into dbt)"
+  pipelines/replay.py: "daily arrival replay; idempotent upsert on complaint_id + row_hash; flags --days --until --rerun --reset"
+  pipelines/run_daily.sh: "N x (replay 1 day + dbt build)"
+  pipelines/replay_status.py: "freshness + late rows in fct"
+  pipelines/check_incremental.py: "incremental fct_complaint vs full rebuild diff (exit 1 on diff)"
+  dbt:
+    project: pipelines/dbt  # run from repo root: uv run dbt build --project-dir pipelines/dbt --profiles-dir pipelines/dbt
+    target_schema: analytics
+    sources: "main.{feed_complaints, replay_log, fdic_institutions, fdic_financials}"
+    models: [stg_complaints, stg_fdic_institutions, stg_fdic_financials, int_complaint_entity, fct_complaint, dim_institution]
+    fct_complaint: "incremental delete+insert on complaint_id; watermark = last_loaded_at (NOT date_received)"
+    seeds: [entity_map_seed (date-aware cfpb_company -> fdic_cert), company_exclusions (bureaus, credit union, fintechs, processors)]
+    tests: "39 nodes PASS (keys, accepted_values, relationships, reconcile feed==fct, XXXX redaction preserved, dates in order, seed ranges non-overlap, exactly one customer)"
+  docs: [docs/00-brief.md, docs/00-day0-setup.md, docs/01-data-quality.md (14 issues), docs/plan-changes.md, docs/day-log.md, docs/discovery/README.md]
+
+gotchas:
+  - "Git Bash -> `wsl -- bash -c '...'` mangles $VAR, backticks, /mnt paths. Use script files + MSYS_NO_PATHCONV=1."
+  - "DuckDB: `days` is a reserved word; don't alias columns as days."
+  - "`cmd | head -1` under set -o pipefail kills the producer (BrokenPipe). Capture output first."
+  - "Only one writer on data/cfpb.duckdb at a time (replay.py and dbt both write)."
+  - "python-dotenv find_dotenv() fails under stdin scripts; use load_dotenv('.env')."
+
+locks: []  # e.g. - {path: agent/, owner: zcode, since: 2026-10-13T09:00+05:30, task: W2-TUE-01}
+
+tasks:
+  # ---------- Day 0 ----------
+  - {id: D0-01, title: "Palantir Developer Tier signup + record plan limits", status: blocked, owner: human, blocker: "approval pending", out: docs/00-day0-setup.md#palantir-developer-tier-limits}
+  - {id: D0-02, title: "Check Developer Console / OSDK / Ontology MCP on tier", status: blocked, owner: human, blocker: D0-01, fallback: "export curated tables; agent fully open-source; one product line in Foundry"}
+  - {id: D0-03, title: "Download CFPB 2024-2026 exports", status: done, owner: claude-code, evidence: "17 zips, zip integrity OK"}
+  - {id: D0-04, title: "FDIC test call", status: done, owner: claude-code}
+  - {id: D0-05, title: "GCP project us-central1, $10 budget alerts 50/90/100, 1-instance cap", status: blocked, owner: human, blocker: "gcloud auth login + gcloud auth application-default login + billing account", then: "claude-code: create project, link billing, enable run/artifactregistry/secretmanager/cloudbuild/billingbudgets APIs, budget, AR repo; max-instances=1 at deploy; install gcloud in WSL", needed_by: 2026-10-26}
+  - {id: D0-06, title: "OpenRouter prepaid credit", status: done, owner: human, evidence: "test call ok, cost logged via usage.include"}
+  - {id: D0-07, title: "Ollama small instruct model", status: done, evidence: "qwen3.5:2b"}
+  - {id: D0-08, title: "Docker Desktop on WSL2; repos in WSL fs", status: done}
+  - {id: D0-09, title: "Kaggle token + GitHub repo with evals/ docs/", status: done, evidence: "https://github.com/Rizkin/complaint-intelligence (public)"}
+  - {id: D0-10, title: "15 discovery contacts", status: replaced, by: D4}
+  - {id: D0-X1, title: "eCFR Reg E/DD/Z XML downloaded (pulled forward from W2-MON)", status: done}
+
+  # ---------- Week 1 ----------
+  - {id: W1-MON-01, title: "docs/00-brief.md (persona, decision, 3 UNVALIDATED hypotheses, metrics, out of scope)", status: done}
+  - {id: W1-MON-02, title: "Send 10 discovery requests", status: replaced, by: W1-DR-01}
+  - {id: W1-MON-03, title: "Load exports to DuckDB, profile, pick customer + 10 peers", status: done}
+  - {id: W1-MON-04, title: "docs/01-data-quality.md >= 8 issues", status: done, evidence: "14 issues"}
+  - {id: W1-MON-05, title: "FDIC records for 11 banks", status: done, evidence: "12 certs incl. Discover history"}
+  - {id: W1-TUE-01, title: "dbt staging, fct_complaint, dim_institution + tests", status: done, evidence: "dbt build 39/39"}
+  - {id: W1-TUE-02, title: "Replay script: daily, idempotent, late rows", status: done, evidence: "rerun day -> 0 ins/upd; 153 late rows captured"}
+  - {id: W1-TUE-03, title: "Entity matching v1 (automated CFPB name -> FDIC cert) + hand-label 100 pairs, precision/recall", status: pending, owner: unassigned, target: "P>=0.95 R>=0.90", note: "current seed is manual for 11 banks only; need automated matcher over all 1,056 in-scope company names; hard cases: holding-co vs charter, Discover merger, TD two charters, Comenity blank NAMEHCR. Human must hand-label pairs.", out: [pipelines/entity_match.py, evals/entity_pairs.csv, docs/01-data-quality.md]}
+  - {id: W1-TUE-04, title: "Reconcile row counts per export", status: done, evidence: "main.load_audit 0 mismatches"}
+  - {id: W1-X-01, title: "Replay full window 2024-01-31..2026-08-31 + dbt build", status: pending, owner: unassigned, note: "run_daily.sh ~5s/day (~1h) or replay.py --until + single dbt build (minutes). Needs data host."}
+  - {id: W1-WED-01, title: "Foundry: upload curated slice, rebuild cleaning in Pipeline Builder", status: blocked, blocker: D0-01, due: 2026-10-14}
+  - {id: W1-WED-02, title: "Ontology: Complaint + Institution object types, linked, owner property", status: blocked, blocker: D0-01}
+  - {id: W1-WED-03, title: "Workshop view: customer complaints for replayed day, filter product/issue", status: blocked, blocker: D0-01}
+  - {id: W1-WED-04, title: "docs/02-foundry-notes.md: every tier limit hit", status: blocked, blocker: D0-01}
+  - {id: W1-THU-01, title: "Hand-audit 200 complaints from held-out month (label noise)", status: pending, owner: human, note: "month from 2026-04..06 (D7)", out: evals/label_audit_200.csv}
+  - {id: W1-THU-02, title: "Baseline classifier on local model; evals/classify.py macro-F1 per product + confusion matrix", status: pending, owner: unassigned, note: "Ollama qwen3.5:2b; if too slow, 5,000-complaint sample + cheap API for held-out month"}
+  - {id: W1-THU-03, title: "Top 3 classifier failure patterns with examples", status: pending, depends: W1-THU-02}
+  - {id: W1-FRI-01, title: "AIP Logic classify+summarize writing back via action", status: blocked, blocker: D0-01}
+  - {id: W1-FRI-02, title: "Actions: Escalate, Assign, Mark reviewed; writes logged", status: blocked, blocker: D0-01}
+  - {id: W1-FRI-03, title: "Triage backtest v0: daily risk score (arrival-day fields only), relief share in top 50 vs random", status: pending, owner: unassigned, depends: W1-X-01, note: "label got_relief; window to 2026-06-30; no leakage (no company_response/timely/public_response in features)"}
+  - {id: W1-DR-01, title: "6 desk-research notes (docs/discovery/01..06)", status: pending, owner: unassigned, spec: docs/discovery/README.md}
+  - {id: W1-SIM-01, title: "Simulated stakeholder session 1 (Head of Complaints), labeled SIMULATED", status: pending, out: docs/discovery/sim-01-head-of-complaints.md}
+  - {id: W1-SAT-01, title: "5-min walkthrough video", status: pending, owner: human}
+  - {id: W1-SAT-02, title: "Case study draft part 1", status: pending}
+  - {id: W1-SAT-03, title: "Applications batch 1 (10, no referrals)", status: pending, owner: human}
+  - {id: W1-SAT-04, title: "Gate 1 review", status: pending, due: 2026-10-17}
+
+  # ---------- Week 2 (summary) ----------
+  - {id: W2-MON, title: "Reg corpus chunking (XML already on disk), 60-item regulation golden set (human), Regulation Section objects", status: pending}
+  - {id: W2-TUE, title: "FastAPI RAG with citations; citation precision/recall + faithfulness; 1 improvement cycle", status: pending}
+  - {id: W2-WED, title: "Agent with 4 tools via OSDK/MCP; 40-question golden set; judge calibrated >=85% vs 30 human grades", status: pending}
+  - {id: W2-THU, title: "Side build 1: IRDAI Form L-30 related-party extractor (3 insurers x 4 quarters)", status: pending}
+  - {id: W2-FRI, title: "Guardrails, failure tests, evals/REPORT.md before/after; FinanceBench no-retrieval baseline", status: pending}
+  - {id: W2-SAT, title: "FinanceBench naive vs improved RAG; mock stakeholder review (SIMULATED); applications batch 2; gate 2", status: pending}
+
+  # ---------- Week 3 (summary) ----------
+  - {id: W3-MON, title: "Dockerfile, Artifact Registry, Terraform Cloud Run (0-1 instances), IAM-only, smoke tests, teardown", status: pending, blocker: D0-05}
+  - {id: W3-TUE, title: "GitHub Actions CI + eval gate (50-item smoke, fail on >3pt drop); OpenTelemetry; dashboard", status: pending}
+  - {id: W3-WED, title: "Retries/circuit breaker/fallback; load test 20 users 10 min; threat model; runbook", status: pending}
+  - {id: W3-THU, title: "Kaggle Community Benchmark (>=3 models); post; case study part 2", status: pending}
+  - {id: W3-FRI, title: "Final demo <=8 min; 3 mock interviews; one-pager; applications batch 3", status: pending}
+  - {id: W3-SAT, title: "README polish, resume bullets, follow-ups, retro", status: pending}
+
+log:
+  - "2026-10-12 claude-code: Day 0 setup; repo created; CFPB/eCFR/FDIC data; DuckDB load (13.5M rows, reconciled); data-quality (14 issues); customer=BofA + peers; brief; replay + dbt (39/39); 30-day replay gate check; .gitignore hardened; STATUS.yaml created."
