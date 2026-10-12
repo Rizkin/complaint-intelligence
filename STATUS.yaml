@@ -57,7 +57,7 @@ environments:
     repo_env_file: ".env (gitignored, mode 600): OPENROUTER_API_KEY set; OLLAMA_HOST=http://localhost:11434; OLLAMA_MODEL=qwen3.5:2b; FOUNDRY_*, GCP_PROJECT empty"
   zcode:
     has_data: "raw only"
-    note: "junction repo data/raw -> D:\foundary\data\raw created 2026-10-12 (cfpb zips, ecfr xml, fdic json all readable). NO DuckDB database here (data/cfpb.duckdb is WSL fs); rebuild via README if needed. zcode runs on windows_host: git + gcloud 588.0.0 (unauthenticated) + terraform available; Python 3.13 stdlib, no uv/.venv."
+    note: "junction repo data/raw -> D:\\foundary\\data\\raw created 2026-10-12 (cfpb zips, ecfr xml, fdic json all readable). NO DuckDB database here (data/cfpb.duckdb is WSL fs); rebuild via README if needed. zcode runs on windows_host: git + gcloud 588.0.0 (unauthenticated) + terraform available; Python 3.13 stdlib, no uv/.venv."
 
 data:
   raw_location: "D:\\foundary\\data\\raw == /mnt/d/foundary/data/raw, symlinked as repo data/raw (gitignored)"
@@ -181,4 +181,4 @@ tasks:
 
 log:
   - "2026-10-12 claude-code: Day 0 setup; repo created; CFPB/eCFR/FDIC data; DuckDB load (13.5M rows, reconciled); data-quality (14 issues); customer=BofA + peers; brief; replay + dbt (39/39); 30-day replay gate check; .gitignore hardened; STATUS.yaml created."
-  - "2026-10-12 19:35 zcode: connected clone at D:\foundary\complaint-intelligence (junction data/raw -> D:\foundary\data\raw; PAT in Windows credential manager). Fixed environments.zcode (has raw data, no DuckDB). Claimed W1-DR-01, lock on docs/discovery/."
+  - "2026-10-12 19:35 zcode: connected clone at D:\\foundary\\complaint-intelligence (junction data/raw -> D:\\foundary\\data\\raw; PAT in Windows credential manager). Fixed environments.zcode (has raw data, no DuckDB). Claimed W1-DR-01, lock on docs/discovery/."
