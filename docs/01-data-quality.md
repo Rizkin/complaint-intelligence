@@ -26,9 +26,42 @@ Profile queries: `pipelines/profile_raw.py`.
 | 9 | **Sparse optional fields.** `tags` 97% empty (empty means "no tag", not missing); `company_public_response` 43% empty; `sub_issue` 1.6% empty. | see profile | **Keep**. Empty `tags` maps to `none`; don't treat as missing data. |
 | 10 | **Volume is rising.** In-scope complaints/month go from ~9k (Jan 2024) to ~15.5k (2026). | 32 months | **Fix** in metrics: spike detection uses rates vs a trailing baseline, and "complaints per $1B assets" uses FDIC assets. |
 | 11 | **Schema narrower than the live database.** The archive has 16 columns; the consent and "consumer disputed" fields of the public CCDB are not present. | 16 columns | **Note**. Nothing to fix; don't design features around those fields. |
+| 12 | **Merged charter still used as a CFPB company name.** FDIC closed Discover Bank (cert 5649) on 2025-05-18 (merged into Capital One), but CFPB keeps filing complaints under "DISCOVER BANK" through 2026. | Discover in scope: 6,834 rows, ~270/month both before and after the merger | **Fix** with a date-aware mapping (`valid_from` / `valid_to` in `pipelines/seeds/entity_map_seed.csv`): pre-merger rows map to 5649, later rows roll up to Capital One (4297). Discover leaves the peer set; TD Bank replaces it. |
+| 13 | **One CFPB name, two FDIC charters.** "TD BANK US HOLDING COMPANY" owns TD Bank N.A. (18409, deposits) and TD Bank USA N.A. (33947, store cards). The complaint does not say which. | 6,566 rows | **Map to 18409** and note the ambiguity; a product-aware rule (card to 33947) is a possible v2 test case for entity matching. |
+| 14 | **FDIC record missing the holding company.** Comenity Capital Bank (Bread Financial's charter) has an empty `NAMEHCR`, so name-to-holding-company matching can't find it. | 8,226 Bread rows | **Fix** with a manual seed row; add to the 100 hand-labeled pairs as a hard case. |
 
 ## Implications for the week
 
-- Customer + 10 peers come from FDIC-insured banks only (issues 4, 5).
+- Customer + 10 peers come from FDIC-insured banks only (issues 4, 5, 12-14).
 - Held-out month for the classifier: one of Apr-Jun 2026 (issue 2).
 - Backtest labels: "Closed with monetary relief" or "Closed with non-monetary relief", windows ending Jun 2026 (issue 3).
+
+## Customer and peers (decided 2026-10-12)
+
+Customer: **Bank of America, N.A.** (cert 3510). Peers, the next 10 FDIC-insured banks by in-scope volume:
+Capital One (4297, incl. Discover after 2025-05-18), JPMorgan Chase (628), Citibank (7213), Wells Fargo (3511),
+Synchrony (27314), American Express (27471), U.S. Bank (6548), Goldman Sachs Bank USA (33124),
+Comenity Capital / Bread (57570), TD Bank (18409).
+
+Excluded: credit bureaus, Navy Federal (NCUA-insured credit union), fintechs and processors (issues 4, 5).
+
+First benchmark (`pipelines/peer_benchmark.py`, Jan 2024 to Jun 2026, FDIC average assets over the same quarters):
+
+| Bank | Complaints | Per $1B assets | % closed with relief |
+|------|-----------:|---------------:|---------------------:|
+| Comenity Capital (Bread) | 7,639 | 584.1 | 52.0 |
+| Synchrony | 17,201 | 152.4 | 24.0 |
+| Capital One | 38,840 | 69.1 | 18.2 |
+| American Express | 12,581 | 62.4 | 23.1 |
+| TD Bank | 6,059 | 16.7 | 36.5 |
+| Citibank | 29,724 | 16.6 | 48.2 |
+| Wells Fargo | 27,125 | 15.4 | 20.4 |
+| Goldman Sachs | 8,003 | 13.0 | 27.5 |
+| U.S. Bank | 8,103 | 12.1 | 29.6 |
+| **Bank of America (customer)** | **27,041** | **10.4** | **42.5** |
+| JPMorgan Chase | 35,676 | 9.7 | 16.0 |
+
+Read with care: per-asset rates favor big universal banks and punish card monolines (Comenity, Synchrony).
+The customer's story is the relief rate: second-lowest complaint rate, but 42.5% closed with relief against a
+peer median of about 25%. That supports a triage hypothesis: many of its complaints are valid, so ranking
+the likely-relief ones first has real value.

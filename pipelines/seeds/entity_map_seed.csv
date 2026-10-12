@@ -1,0 +1,14 @@
+cfpb_company,fdic_cert,valid_from,valid_to,role,note
+"BANK OF AMERICA, NATIONAL ASSOCIATION",3510,2011-12-01,9999-12-31,customer,
+CAPITAL ONE FINANCIAL CORPORATION,4297,2011-12-01,9999-12-31,peer,holding company name; charter is Capital One N.A.
+JPMORGAN CHASE & CO.,628,2011-12-01,9999-12-31,peer,holding company name
+"CITIBANK, N.A.",7213,2011-12-01,9999-12-31,peer,
+WELLS FARGO & COMPANY,3511,2011-12-01,9999-12-31,peer,holding company name
+SYNCHRONY FINANCIAL,27314,2011-12-01,9999-12-31,peer,holding company name
+AMERICAN EXPRESS COMPANY,27471,2011-12-01,9999-12-31,peer,holding company name
+U.S. BANCORP,6548,2011-12-01,9999-12-31,peer,holding company name
+GOLDMAN SACHS BANK USA,33124,2011-12-01,9999-12-31,peer,
+"Bread Financial Holdings, Inc.",57570,2011-12-01,9999-12-31,peer,charter is Comenity Capital Bank; FDIC has no holding company on record
+TD BANK US HOLDING COMPANY,18409,2011-12-01,9999-12-31,peer,ambiguous: also owns TD Bank USA N.A. (33947) which issues cards; mapped to main charter
+DISCOVER BANK,5649,2011-12-01,2025-05-17,history,charter closed 2025-05-18 (merged into Capital One)
+DISCOVER BANK,4297,2025-05-18,9999-12-31,peer_rollup,CFPB still files under DISCOVER BANK after merger; rolls up to Capital One
