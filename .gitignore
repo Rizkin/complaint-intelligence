@@ -1,14 +1,49 @@
+# --- Datasets: never commit (raw downloads live in D:\foundary\data\raw, symlinked as data/raw) ---
 data/
 *.duckdb
 *.duckdb.wal
+*.zip
+*.gz
+*.parquet
+*.xml
+*.pdf
+*.json
+*.csv
+*.tsv
+*.xlsx
+# ...except hand-written dbt seeds, which are code, and repo config
+!pipelines/dbt/seeds/*.csv
+!evals/**/*.csv
+!evals/**/*.json
+!evals/**/*.jsonl
+!.vscode/*.json
+!package.json
+!tsconfig.json
+
+# --- Secrets ---
 .env
+.env.*
+!.env.example
+kaggle.json
+access_token
+*.pem
+*.key
+
+# --- Python / tooling ---
 .venv/
 __pycache__/
-kaggle.json
-*.tfstate*
-.terraform/
-docs/discovery/contacts.md
+*.pyc
+
+# --- dbt ---
 pipelines/dbt/target/
 pipelines/dbt/logs/
+pipelines/dbt/dbt_packages/
 logs/
 .user.yml
+
+# --- Terraform ---
+*.tfstate*
+.terraform/
+
+# --- Private notes ---
+docs/discovery/contacts.md
