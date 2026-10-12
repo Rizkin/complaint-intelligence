@@ -12,7 +12,7 @@
 # Owner enum: claude-code | zcode | human | unassigned
 
 schema_version: 1
-updated_at: 2026-10-12T19:35+05:30
+updated_at: 2026-10-12T20:35+05:30
 updated_by: zcode
 
 plan:
@@ -89,6 +89,7 @@ key_numbers:
   duplicate_complaint_ids: 0
   customer_bofa_2024_01_to_2026_06: {complaints: 27041, per_1bn_assets: 10.4, pct_relief: 42.5}
   peer_median_pct_relief: ~25
+  bofa_sep_oct_2025_export13_sample: {rows: 1783, pct_relief: 40.6, pct_monetary_of_relief: 89.9, pct_timely: 99.55, relief_rate_purchase_statement_issue: 59.8, top_issue_managing_an_account_share: 34.8}
   openrouter: {key_limit_usd: 12, key_remaining_usd: 11.97, account_balance_usd: 14.36, note: "key limit 12 < planned 15; owner may raise"}
   ollama_qwen3_5_2b: {tokens_per_sec: ~25.5, json_mode: works}
 
@@ -118,8 +119,7 @@ gotchas:
   - "Only one writer on data/cfpb.duckdb at a time (replay.py and dbt both write)."
   - "python-dotenv find_dotenv() fails under stdin scripts; use load_dotenv('.env')."
 
-locks:
-  - {path: docs/discovery/, owner: zcode, since: 2026-10-12T19:35+05:30, task: W1-DR-01}
+locks: []  # e.g. - {path: agent/, owner: zcode, since: 2026-10-13T09:00+05:30, task: W2-TUE-01}
 
 tasks:
   # ---------- Day 0 ----------
@@ -156,7 +156,7 @@ tasks:
   - {id: W1-FRI-01, title: "AIP Logic classify+summarize writing back via action", status: blocked, blocker: D0-01}
   - {id: W1-FRI-02, title: "Actions: Escalate, Assign, Mark reviewed; writes logged", status: blocked, blocker: D0-01}
   - {id: W1-FRI-03, title: "Triage backtest v0: daily risk score (arrival-day fields only), relief share in top 50 vs random", status: pending, owner: unassigned, depends: W1-X-01, note: "label got_relief; window to 2026-06-30; no leakage (no company_response/timely/public_response in features)"}
-  - {id: W1-DR-01, title: "6 desk-research notes (docs/discovery/01..06)", status: in_progress, owner: zcode, spec: docs/discovery/README.md, started: 2026-10-12T19:35+05:30}
+  - {id: W1-DR-01, title: "6 desk-research notes (docs/discovery/01..06)", status: done, owner: zcode, spec: docs/discovery/README.md, evidence: "docs/discovery/01..06-*.md; note 01 grounded in Export_13 stream (BofA Sep-Oct 2025: 1,783 rows, 40.6% relief, 99.55% timely, purchase-dispute issues 59.8% relief); notes 02-06 web-sourced with links; G1 gate item satisfied", done: 2026-10-12T20:35+05:30}
   - {id: W1-SIM-01, title: "Simulated stakeholder session 1 (Head of Complaints), labeled SIMULATED", status: pending, out: docs/discovery/sim-01-head-of-complaints.md}
   - {id: W1-SAT-01, title: "5-min walkthrough video", status: pending, owner: human}
   - {id: W1-SAT-02, title: "Case study draft part 1", status: pending}
@@ -182,3 +182,4 @@ tasks:
 log:
   - "2026-10-12 claude-code: Day 0 setup; repo created; CFPB/eCFR/FDIC data; DuckDB load (13.5M rows, reconciled); data-quality (14 issues); customer=BofA + peers; brief; replay + dbt (39/39); 30-day replay gate check; .gitignore hardened; STATUS.yaml created."
   - "2026-10-12 19:35 zcode: connected clone at D:\\foundary\\complaint-intelligence (junction data/raw -> D:\\foundary\\data\\raw; PAT in Windows credential manager). Fixed environments.zcode (has raw data, no DuckDB). Claimed W1-DR-01, lock on docs/discovery/."
+  - "2026-10-12 20:35 zcode: W1-DR-01 done. Six notes in docs/discovery/ (01 voice-of-customer from Export 13 stream; 02 job postings; 03 regulator findings; 04 exam expectations; 05 10-K disclosures; 06 practitioner voice). Lock released. Key result: BofA Sep-Oct 2025 relief 40.6%, purchase-dispute issues 59.8% relief vs 40.6% base (H1 support), timely 99.55% (not a differentiator)."
