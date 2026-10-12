@@ -5,7 +5,7 @@ import duckdb
 con = duckdb.connect("data/cfpb.duckdb")
 con.execute("""
     CREATE OR REPLACE TABLE entity_map_seed AS
-    SELECT * FROM read_csv('pipelines/seeds/entity_map_seed.csv', header = true,
+    SELECT * FROM read_csv('pipelines/dbt/seeds/entity_map_seed.csv', header = true,
         columns = {'cfpb_company': 'VARCHAR', 'fdic_cert': 'INTEGER', 'valid_from': 'DATE',
                    'valid_to': 'DATE', 'role': 'VARCHAR', 'note': 'VARCHAR'})
 """)

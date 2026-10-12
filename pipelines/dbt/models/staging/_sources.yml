@@ -1,0 +1,18 @@
+version: 2
+
+sources:
+  - name: landing
+    schema: main
+    description: Tables written by the Python loaders in pipelines/ (load_raw.py, replay.py, fetch_fdic.py).
+    tables:
+      - name: feed_complaints
+        description: Daily replay feed of in-scope complaints, upserted on complaint_id by replay.py.
+        columns:
+          - name: complaint_id
+            data_tests: [unique, not_null]
+      - name: replay_log
+        description: One row per replayed arrival day (reruns add rows).
+      - name: fdic_institutions
+        description: FDIC BankFind institution records for the certs in entity_map_seed.
+      - name: fdic_financials
+        description: FDIC quarterly financials (thousands of USD) for the same certs.

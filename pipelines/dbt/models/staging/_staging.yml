@@ -1,0 +1,29 @@
+version: 2
+
+models:
+  - name: stg_complaints
+    columns:
+      - name: complaint_id
+        data_tests: [unique, not_null]
+      - name: date_received
+        data_tests: [not_null]
+      - name: arrival_date
+        data_tests: [not_null]
+      - name: product
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["Checking or savings account", "Credit card"]
+      - name: company
+        data_tests: [not_null]
+
+  - name: stg_fdic_institutions
+    columns:
+      - name: fdic_cert
+        data_tests: [unique, not_null]
+
+  - name: stg_fdic_financials
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [fdic_cert, report_date]

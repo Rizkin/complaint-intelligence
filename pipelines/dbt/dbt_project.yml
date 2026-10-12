@@ -1,0 +1,35 @@
+name: complaint_intelligence
+version: "1.0.0"
+profile: complaint_intelligence
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  complaint_intelligence:
+    staging:
+      +materialized: view
+    intermediate:
+      +materialized: view
+    marts:
+      +materialized: table
+
+seeds:
+  complaint_intelligence:
+    entity_map_seed:
+      +column_types:
+        cfpb_company: varchar
+        fdic_cert: integer
+        valid_from: date
+        valid_to: date
+        role: varchar
+        note: varchar
+    company_exclusions:
+      +column_types:
+        cfpb_company: varchar
+        entity_type: varchar
+        reason: varchar

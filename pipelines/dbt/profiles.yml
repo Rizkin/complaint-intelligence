@@ -1,0 +1,9 @@
+complaint_intelligence:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      # Relative to the directory dbt is run from (the repo root).
+      path: "{{ env_var('DUCKDB_PATH', 'data/cfpb.duckdb') }}"
+      schema: analytics
+      threads: 4

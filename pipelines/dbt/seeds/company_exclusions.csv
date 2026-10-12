@@ -1,0 +1,13 @@
+cfpb_company,entity_type,reason
+"EQUIFAX, INC.",credit_bureau,not a bank; filed under credit card but behaves like credit reporting
+"TRANSUNION INTERMEDIATE HOLDINGS, INC.",credit_bureau,not a bank; filed under credit card but behaves like credit reporting
+Experian Information Solutions Inc.,credit_bureau,not a bank; filed under credit card but behaves like credit reporting
+NAVY FEDERAL CREDIT UNION,credit_union,NCUA-insured; no FDIC certificate
+Chime Financial Inc,fintech,program manager; deposits held at partner banks
+"Block, Inc.",fintech,Cash App; no FDIC certificate for the complaint entity
+"Paypal Holdings, Inc",fintech,no FDIC certificate for the complaint entity
+ROBINHOOD MARKETS INC.,fintech,no FDIC certificate for the complaint entity
+FinCo Services Inc DBA Current,fintech,program manager; deposits held at partner banks
+"Credit Karma, LLC",fintech,no FDIC certificate for the complaint entity
+"Early Warning Services, LLC",processor,Zelle operator
+"Fidelity National Information Services, Inc. (FNIS)",processor,payments processor

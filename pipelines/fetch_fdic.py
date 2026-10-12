@@ -2,7 +2,7 @@
 
 Writes raw JSON to data/raw/fdic/ and loads `fdic_institutions` and `fdic_financials` into DuckDB.
 
-Usage: uv run python pipelines/fetch_fdic.py [--seed pipelines/seeds/entity_map_seed.csv]
+Usage: uv run python pipelines/fetch_fdic.py [--seed pipelines/dbt/seeds/entity_map_seed.csv]
 """
 
 import argparse
@@ -15,7 +15,7 @@ import duckdb
 import requests
 
 API = "https://api.fdic.gov/banks"
-INST_FIELDS = "CERT,NAME,ACTIVE,ASSET,DEP,STALP,CITY,NAMEHCR,RSSDHCR,CHARTER_CLASS,REGAGNT,ESTYMD,ENDEFYMD,CHANGEC1,REPDTE,WEBADDR"
+INST_FIELDS = "CERT,NAME,ACTIVE,ASSET,DEP,STALP,CITY,NAMEHCR,RSSDHCR,BKCLASS,REGAGNT,ESTYMD,ENDEFYMD,CHANGEC1,REPDTE,WEBADDR"
 FIN_FIELDS = "CERT,REPDTE,ASSET,DEP,NETINC,LNLSNET"
 
 
@@ -27,7 +27,7 @@ def get(path, **params):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--seed", default="pipelines/seeds/entity_map_seed.csv")
+    ap.add_argument("--seed", default="pipelines/dbt/seeds/entity_map_seed.csv")
     ap.add_argument("--out", default="data/raw/fdic")
     ap.add_argument("--db", default="data/cfpb.duckdb")
     ap.add_argument("--since", default="20231231", help="first quarter-end (YYYYMMDD) of financials to pull")

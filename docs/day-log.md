@@ -13,3 +13,13 @@
 - Numbers: scope 428,203 complaints; 47.6% with narrative pre-cutoff; BofA 10.4 complaints per $1B assets, 42.5% relief vs peer median ~25%.
 - Blockers: Palantir approval; GCP billing.
 - Tomorrow top 3: `docs/00-brief.md`; dbt staging + fct_complaint + dim_institution with tests; replay script.
+
+## 2026-10-12 (continued: Tuesday tasks pulled forward)
+- Shipped: `docs/00-brief.md`; `pipelines/replay.py` (daily feed, simulated late arrivals, idempotent upsert);
+  dbt project `pipelines/dbt` (3 staging, 1 intermediate, `fct_complaint` incremental, `dim_institution`,
+  2 seeds, 5 singular tests); `run_daily.sh`, `replay_status.py`, `check_incremental.py`.
+- Numbers: 30 replayed days (2024-01-01 to 2024-01-30), 8,853 complaints, 153 late rows (max lag 7 days) all in
+  `fct_complaint`; rerun of a day = 0 inserts/updates; incremental vs full rebuild diff = 0 rows; dbt build 39/39 pass.
+- Gate check: "replay runs 30 days without manual fixes" met on this window.
+- Blockers: Palantir approval; GCP billing.
+- Next top 3: entity matching v1 + 100 hand-labeled pairs; replay the rest of the window (to 2026-08); desk-research notes.
