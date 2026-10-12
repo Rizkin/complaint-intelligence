@@ -12,8 +12,8 @@
 # Owner enum: claude-code | zcode | human | unassigned
 
 schema_version: 1
-updated_at: 2026-10-12T14:30+05:30
-updated_by: claude-code
+updated_at: 2026-10-12T19:35+05:30
+updated_by: zcode
 
 plan:
   source: "D:\\foundary\\3-Week FDE Plan — Complaint Intelligence Flagship (1).pdf (28 pages, local to Windows host only)"
@@ -56,8 +56,8 @@ environments:
     git_push_auth: "credential.helper = Windows gh.exe auth git-credential"
     repo_env_file: ".env (gitignored, mode 600): OPENROUTER_API_KEY set; OLLAMA_HOST=http://localhost:11434; OLLAMA_MODEL=qwen3.5:2b; FOUNDRY_*, GCP_PROJECT empty"
   zcode:
-    has_data: false
-    note: "no DuckDB / raw data there. Code + SQL edits fine; data-dependent runs (load, replay, dbt build, evals on data) must run on windows_host/WSL or recreate data via README (~846MB download)."
+    has_data: "raw only"
+    note: "junction repo data/raw -> D:\foundary\data\raw created 2026-10-12 (cfpb zips, ecfr xml, fdic json all readable). NO DuckDB database here (data/cfpb.duckdb is WSL fs); rebuild via README if needed. zcode runs on windows_host: git + gcloud 588.0.0 (unauthenticated) + terraform available; Python 3.13 stdlib, no uv/.venv."
 
 data:
   raw_location: "D:\\foundary\\data\\raw == /mnt/d/foundary/data/raw, symlinked as repo data/raw (gitignored)"
@@ -118,7 +118,8 @@ gotchas:
   - "Only one writer on data/cfpb.duckdb at a time (replay.py and dbt both write)."
   - "python-dotenv find_dotenv() fails under stdin scripts; use load_dotenv('.env')."
 
-locks: []  # e.g. - {path: agent/, owner: zcode, since: 2026-10-13T09:00+05:30, task: W2-TUE-01}
+locks:
+  - {path: docs/discovery/, owner: zcode, since: 2026-10-12T19:35+05:30, task: W1-DR-01}
 
 tasks:
   # ---------- Day 0 ----------
@@ -155,7 +156,7 @@ tasks:
   - {id: W1-FRI-01, title: "AIP Logic classify+summarize writing back via action", status: blocked, blocker: D0-01}
   - {id: W1-FRI-02, title: "Actions: Escalate, Assign, Mark reviewed; writes logged", status: blocked, blocker: D0-01}
   - {id: W1-FRI-03, title: "Triage backtest v0: daily risk score (arrival-day fields only), relief share in top 50 vs random", status: pending, owner: unassigned, depends: W1-X-01, note: "label got_relief; window to 2026-06-30; no leakage (no company_response/timely/public_response in features)"}
-  - {id: W1-DR-01, title: "6 desk-research notes (docs/discovery/01..06)", status: pending, owner: unassigned, spec: docs/discovery/README.md}
+  - {id: W1-DR-01, title: "6 desk-research notes (docs/discovery/01..06)", status: in_progress, owner: zcode, spec: docs/discovery/README.md, started: 2026-10-12T19:35+05:30}
   - {id: W1-SIM-01, title: "Simulated stakeholder session 1 (Head of Complaints), labeled SIMULATED", status: pending, out: docs/discovery/sim-01-head-of-complaints.md}
   - {id: W1-SAT-01, title: "5-min walkthrough video", status: pending, owner: human}
   - {id: W1-SAT-02, title: "Case study draft part 1", status: pending}
@@ -180,3 +181,4 @@ tasks:
 
 log:
   - "2026-10-12 claude-code: Day 0 setup; repo created; CFPB/eCFR/FDIC data; DuckDB load (13.5M rows, reconciled); data-quality (14 issues); customer=BofA + peers; brief; replay + dbt (39/39); 30-day replay gate check; .gitignore hardened; STATUS.yaml created."
+  - "2026-10-12 19:35 zcode: connected clone at D:\foundary\complaint-intelligence (junction data/raw -> D:\foundary\data\raw; PAT in Windows credential manager). Fixed environments.zcode (has raw data, no DuckDB). Claimed W1-DR-01, lock on docs/discovery/."
