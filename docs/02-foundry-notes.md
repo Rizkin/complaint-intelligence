@@ -35,4 +35,8 @@ Checked 2026-10-14 by reading the UI (no changes made).
 
 ## Limits hit log
 
-_(none yet; append each limit or error with date, action and message)_
+_No limit or error hit so far. Append each limit or error with date, action and message._
+
+| Date | Action | Result |
+|------|--------|--------|
+| 2026-10-14 | Uploaded `institution.csv`, `complaint_sample_1k.csv`, `complaint_customer.parquet` (5.8 MB) to the project | OK, no limit message. Parquet kept its schema on import: 26 columns, dates as `date`, flags as `boolean`, `fdic_cert` as `integer`. Row count 29,730 = local export. |
