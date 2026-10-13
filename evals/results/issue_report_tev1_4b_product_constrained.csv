@@ -1,0 +1,22 @@
+,precision,recall,f1-score,support
+"Advertising and marketing, including promotional offers",0.412,0.636,0.5,11.0
+Closing an account,0.407,0.649,0.5,37.0
+Closing your account,0.344,0.611,0.44,18.0
+Fees or interest,0.667,0.8,0.727,45.0
+Getting a credit card,0.643,0.409,0.5,22.0
+Incorrect information on your report,0.244,0.833,0.377,12.0
+Managing an account,0.762,0.363,0.492,168.0
+Opening an account,0.577,0.652,0.612,23.0
+"Other features, terms, or problems",0.488,0.382,0.429,55.0
+Problem caused by your funds being low,1.0,0.174,0.296,23.0
+Problem when making payments,0.231,0.188,0.207,16.0
+Problem with a company's investigation into an existing problem,0.0,0.0,0.0,7.0
+Problem with a lender or other company charging your account,0.353,0.133,0.194,45.0
+Problem with a purchase shown on your statement,0.833,0.368,0.511,95.0
+Problem with fraud alerts or security freezes,0.0,0.0,0.0,1.0
+Struggling to pay your bill,0.0,0.0,0.0,4.0
+Trouble using your card,0.455,0.294,0.357,17.0
+Unable to get your credit report or credit score,0.0,0.0,0.0,1.0
+micro avg,0.448,0.412,0.429,600.0
+macro avg,0.412,0.361,0.341,600.0
+weighted avg,0.618,0.412,0.457,600.0

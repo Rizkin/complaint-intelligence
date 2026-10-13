@@ -191,3 +191,5 @@ log:
   - "2026-10-14 claude-code: Workshop filter list (Product, Issue) added; table-to-filter wiring + publish left for human (owner set to human on W1-WED-03)."
   - "2026-10-14 claude-code: W1-WED-03 done (Workshop v0.4.0 published, filters verified). Wednesday Foundry day complete: upload, pipeline, ontology, Workshop. Next: Thursday data tasks (label audit, baseline classifier) and Friday Foundry actions/AIP Logic."
   - "2026-10-15 claude-code: Thu classifier done: baseline + TF-IDF reference + failure patterns; audit sheet prepared for human (W1-THU-01). Key finding: supervised TF-IDF issue macro-F1 0.498 >> zero-shot qwen 0.122."
+  - "2026-10-15 claude-code: Ollama upgraded 0.35.0 -> 0.40.3 (user approved); pulled tev1:0.8b-q8_0, tev1:4b-q4_K_M; laya needs MLX (not usable). Decision-model eval on the 600 held-out: tev1 4B product-constrained issue macro-F1 0.341 (baseline 0.122, TF-IDF 0.498). See docs/04-model-comparison.md. Env note: WSL cannot reach Windows Ollama; use evals/docker_run.sh."
+

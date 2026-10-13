@@ -13,6 +13,50 @@
       "issue_accuracy | Credit card": 0.2067,
       "parse_failures": 0
     },
+    "tev1_0.8b": {
+      "product_macro_f1": 0.7922,
+      "product_accuracy": 0.7983,
+      "issue_macro_f1": 0.1289,
+      "issue_accuracy": 0.1267,
+      "issue_macro_f1 | Checking or savings account": 0.2096,
+      "issue_accuracy | Checking or savings account": 0.17,
+      "issue_macro_f1 | Credit card": 0.149,
+      "issue_accuracy | Credit card": 0.0833,
+      "parse_failures": 0
+    },
+    "tev1_0.8b+product_constrained": {
+      "product_macro_f1": 0.7922,
+      "product_accuracy": 0.7983,
+      "issue_macro_f1": 0.2225,
+      "issue_accuracy": 0.2,
+      "issue_macro_f1 | Checking or savings account": 0.1648,
+      "issue_accuracy | Checking or savings account": 0.0833,
+      "issue_macro_f1 | Credit card": 0.3091,
+      "issue_accuracy | Credit card": 0.3167,
+      "parse_failures": 0
+    },
+    "tev1_4b": {
+      "product_macro_f1": 0.9049,
+      "product_accuracy": 0.905,
+      "issue_macro_f1": 0.2145,
+      "issue_accuracy": 0.28,
+      "issue_macro_f1 | Checking or savings account": 0.1991,
+      "issue_accuracy | Checking or savings account": 0.2667,
+      "issue_macro_f1 | Credit card": 0.3072,
+      "issue_accuracy | Credit card": 0.2933,
+      "parse_failures": 0
+    },
+    "tev1_4b+product_constrained": {
+      "product_macro_f1": 0.9049,
+      "product_accuracy": 0.905,
+      "issue_macro_f1": 0.3412,
+      "issue_accuracy": 0.4117,
+      "issue_macro_f1 | Checking or savings account": 0.2663,
+      "issue_accuracy | Checking or savings account": 0.3667,
+      "issue_macro_f1 | Credit card": 0.3895,
+      "issue_accuracy | Credit card": 0.4567,
+      "parse_failures": 0
+    },
     "tfidf": {
       "product_macro_f1": 0.955,
       "product_accuracy": 0.955,

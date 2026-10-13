@@ -159,11 +159,17 @@ def cmd_report(_):
     os.makedirs(RESULTS, exist_ok=True)
     gold = pd.read_parquet(SAMPLE)[["complaint_id", "product", "issue"]]
     summary = {"held_out_month": "2026-05", "sample": len(gold), "systems": {}}
-    for name in ("llm", "tfidf"):
-        path = f"{DATA}/pred_{name}.parquet"
-        if not os.path.exists(path):
-            continue
+    import glob
+
+    variants = []  # (system name, parquet path, column holding the issue prediction)
+    for path in sorted(glob.glob(f"{DATA}/pred_*.parquet")):
+        name = os.path.basename(path)[len("pred_"):-len(".parquet")]
+        variants.append((name, path, "pred_issue"))
+        if "pred_issue_c" in pd.read_parquet(path).columns:
+            variants.append((name + "+product_constrained", path, "pred_issue_c"))
+    for name, path, issue_col in variants:
         d = gold.merge(pd.read_parquet(path), on="complaint_id")
+        d["pred_issue"] = d[issue_col]
         d["pred_product"] = d["pred_product"].fillna("<none>")
         d["pred_issue"] = d["pred_issue"].fillna("<none>")
         sysrep = {}
@@ -172,7 +178,7 @@ def cmd_report(_):
         sysrep["product_accuracy"] = float((d["product"] == d["pred_product"]).mean())
         cm = confusion_matrix(d["product"], d["pred_product"], labels=PRODUCTS)
         pd.DataFrame(cm, index=[f"true: {p}" for p in PRODUCTS], columns=[f"pred: {p}" for p in PRODUCTS]) \
-            .to_csv(f"{RESULTS}/confusion_product_{name}.csv")
+            .to_csv(f"{RESULTS}/confusion_product_{name.split('+')[0]}.csv")
         # issue, overall and per product (gold-product slice)
         labels = sorted(set(d["issue"]))
         sysrep["issue_macro_f1"] = macro_f1(d["issue"], d["pred_issue"], labels)
@@ -183,10 +189,10 @@ def cmd_report(_):
             sysrep[f"issue_macro_f1 | {prod}"] = macro_f1(s["issue"], s["pred_issue"], ls)
             sysrep[f"issue_accuracy | {prod}"] = float((s["issue"] == s["pred_issue"]).mean())
         rep = classification_report(d["issue"], d["pred_issue"], labels=labels, output_dict=True, zero_division=0)
-        pd.DataFrame(rep).T.round(3).to_csv(f"{RESULTS}/issue_report_{name}.csv")
+        pd.DataFrame(rep).T.round(3).to_csv(f"{RESULTS}/issue_report_{name.replace('+', '_')}.csv")
         top_conf = (d[d["issue"] != d["pred_issue"]].groupby(["issue", "pred_issue"]).size()
                     .sort_values(ascending=False).head(15).reset_index(name="n"))
-        top_conf.to_csv(f"{RESULTS}/issue_top_confusions_{name}.csv", index=False)
+        top_conf.to_csv(f"{RESULTS}/issue_top_confusions_{name.replace('+', '_')}.csv", index=False)
         sysrep["parse_failures"] = int((d["pred_product"] == "<none>").sum())
         summary["systems"][name] = {k: round(v, 4) if isinstance(v, float) else v for k, v in sysrep.items()}
     json.dump(summary, open(f"{RESULTS}/classify_baseline.json", "w"), indent=2)

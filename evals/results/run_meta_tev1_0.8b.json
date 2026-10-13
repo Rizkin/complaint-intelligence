@@ -1,0 +1,10 @@
+{
+  "model": "tev1:0.8b-q8_0",
+  "endpoint": "/v1/systemone",
+  "items": 600,
+  "errors": 0,
+  "total_seconds": 351.5,
+  "input_tokens": 1228988,
+  "cost_usd": 0.0,
+  "median_seconds_per_item": 0.57
+}
