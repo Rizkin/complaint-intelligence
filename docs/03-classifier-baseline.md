@@ -19,16 +19,19 @@ The LLM step runs in a Docker container because the Windows Ollama listens on it
 
 ## Results (held-out 2026-05, n = 600)
 
-| Metric | LLM zero-shot v0 |
-|--------|-----------------:|
-| Product macro-F1 | **0.861** |
-| Product accuracy | 0.862 |
-| Issue macro-F1 (24 labels) | **0.122** |
-| Issue accuracy | 0.143 |
-| Issue macro-F1, checking/savings only | 0.100 (accuracy 0.080) |
-| Issue macro-F1, credit card only | 0.173 (accuracy 0.207) |
+| Metric | LLM zero-shot v0 | TF-IDF + logistic regression (supervised reference) |
+|--------|-----------------:|------------------------------:|
+| Product macro-F1 | **0.861** | **0.955** |
+| Product accuracy | 0.862 | 0.955 |
+| Issue macro-F1 (24 labels) | **0.122** | **0.498** |
+| Issue accuracy | 0.143 | 0.637 |
+| Issue macro-F1, checking/savings only | 0.100 (acc 0.080) | 0.363 (acc 0.630) |
+| Issue macro-F1, credit card only | 0.173 (acc 0.207) | 0.574 (acc 0.643) |
 
-Product confusion (rows true, columns predicted):
+The reference is trained on ~all bank-scope narratives from 2024-01 to 2026-02 (no data from the held-out month), 1-2 word n-grams, 200k features, two
+independent multinomial logistic regressions (product, issue). Cost $0, CPU only, but training took ~35 min on this laptop (lbfgs, large feature space).
+
+Product confusion, LLM v0 (rows true, columns predicted); TF-IDF is in `evals/results/confusion_product_tfidf.csv` (283/17, 10/290):
 
 | | pred checking/savings | pred credit card |
 |---|---:|---:|
@@ -52,10 +55,16 @@ Per-class issue report: `evals/results/issue_report_llm.csv`. Top issue confusio
 ## Reading the numbers
 
 - Product at 0.86 is usable as a first routing signal; issue at 0.12 is not. A 2B zero-shot model with a flat 24-label list is the floor, which is the point of a baseline.
+- **The supervised reference wins by a lot (issue macro-F1 0.50 vs 0.12).** It learned how consumers *use* the labels (Managing an account is the broad default;
+  credit-report-style labels are rare), which a zero-shot prompt cannot know. This is the number the LLM has to beat, or the design should use the cheap model for
+  the label and the LLM for what it is good at (summary, regulation mapping with citations).
+- The reference's own errors are mostly between neighbouring broad labels (Problem with a lender or other company charging your account -> Managing an account, 32;
+  Closing an account <-> Managing an account), the same ambiguity the audit should quantify.
 - The consumer-chosen issue is itself ambiguous (a fraud claim filed as "Managing an account"). Expect the achievable ceiling on issue to be well below 1.0 even with a perfect model.
 
 ## Next
 
-- [ ] TF-IDF + logistic regression reference (same sample): numbers below once finished.
+- [x] TF-IDF + logistic regression reference (same sample): done, table above.
 - [ ] 200-complaint hand audit of the held-out month -> label-noise estimate; re-score against the audited subset and report both numbers (plan risk row 3).
-- [ ] Improvement cycle (Week 2): product-conditioned issue list, label definitions, few-shot; re-measure on the same 600.
+- [ ] Improvement cycle (Week 2): product-conditioned issue list, label definitions, few-shot; re-measure on the same 600. Target to beat: TF-IDF issue macro-F1 0.498.
+- [ ] Decide the production path once the audit is in: cheap supervised classifier for product/issue + LLM for summary and regulation mapping, or a few-shot LLM that matches it.

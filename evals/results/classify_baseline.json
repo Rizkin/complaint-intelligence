@@ -12,6 +12,17 @@
       "issue_macro_f1 | Credit card": 0.1734,
       "issue_accuracy | Credit card": 0.2067,
       "parse_failures": 0
+    },
+    "tfidf": {
+      "product_macro_f1": 0.955,
+      "product_accuracy": 0.955,
+      "issue_macro_f1": 0.498,
+      "issue_accuracy": 0.6367,
+      "issue_macro_f1 | Checking or savings account": 0.3633,
+      "issue_accuracy | Checking or savings account": 0.63,
+      "issue_macro_f1 | Credit card": 0.5745,
+      "issue_accuracy | Credit card": 0.6433,
+      "parse_failures": 0
     }
   }
 }
