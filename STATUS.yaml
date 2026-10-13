@@ -145,7 +145,7 @@ tasks:
   - {id: W1-TUE-02, title: "Replay script: daily, idempotent, late rows", status: done, evidence: "rerun day -> 0 ins/upd; 153 late rows captured"}
   - {id: W1-TUE-03, title: "Entity matching v1 (automated CFPB name -> FDIC cert) + hand-label 100 pairs, precision/recall", status: pending, owner: unassigned, target: "P>=0.95 R>=0.90", note: "current seed is manual for 11 banks only; need automated matcher over all 1,056 in-scope company names; hard cases: holding-co vs charter, Discover merger, TD two charters, Comenity blank NAMEHCR. Human must hand-label pairs.", out: [pipelines/entity_match.py, evals/entity_pairs.csv, docs/01-data-quality.md]}
   - {id: W1-TUE-04, title: "Reconcile row counts per export", status: done, evidence: "main.load_audit 0 mismatches"}
-  - {id: W1-X-01, title: "Replay full window 2024-01-31..2026-08-31 + dbt build", status: pending, owner: unassigned, note: "run_daily.sh ~5s/day (~1h) or replay.py --until + single dbt build (minutes). Needs data host."}
+  - {id: W1-X-01, title: "Replay full window 2024-01-31..2026-08-31 + dbt build", status: in_progress, owner: claude-code, note: "run_daily.sh ~5s/day (~1h) or replay.py --until + single dbt build (minutes). Needs data host."}
   - {id: W1-WED-01, title: "Foundry: upload curated slice, rebuild cleaning in Pipeline Builder", status: blocked, blocker: D0-01, due: 2026-10-14}
   - {id: W1-WED-02, title: "Ontology: Complaint + Institution object types, linked, owner property", status: blocked, blocker: D0-01}
   - {id: W1-WED-03, title: "Workshop view: customer complaints for replayed day, filter product/issue", status: blocked, blocker: D0-01}
