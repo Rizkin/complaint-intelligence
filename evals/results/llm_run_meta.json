@@ -1,0 +1,9 @@
+{
+  "model": "qwen3.5:2b",
+  "items": 600,
+  "errors": 0,
+  "total_seconds": 930.8,
+  "prompt_tokens": 285737,
+  "completion_tokens": 16348,
+  "cost_usd": 0.0
+}

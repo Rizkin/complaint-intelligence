@@ -1,0 +1,17 @@
+{
+  "held_out_month": "2026-05",
+  "sample": 600,
+  "systems": {
+    "llm": {
+      "product_macro_f1": 0.8614,
+      "product_accuracy": 0.8617,
+      "issue_macro_f1": 0.122,
+      "issue_accuracy": 0.1433,
+      "issue_macro_f1 | Checking or savings account": 0.1002,
+      "issue_accuracy | Checking or savings account": 0.08,
+      "issue_macro_f1 | Credit card": 0.1734,
+      "issue_accuracy | Credit card": 0.2067,
+      "parse_failures": 0
+    }
+  }
+}
