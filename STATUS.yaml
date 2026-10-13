@@ -123,8 +123,8 @@ locks: []  # e.g. - {path: agent/, owner: zcode, since: 2026-10-13T09:00+05:30, 
 
 tasks:
   # ---------- Day 0 ----------
-  - {id: D0-01, title: "Palantir Developer Tier signup + record plan limits", status: blocked, owner: human, blocker: "approval pending", out: docs/00-day0-setup.md#palantir-developer-tier-limits}
-  - {id: D0-02, title: "Check Developer Console / OSDK / Ontology MCP on tier", status: blocked, owner: human, blocker: D0-01, fallback: "export curated tables; agent fully open-source; one product line in Foundry"}
+  - {id: D0-01, title: "Palantir Developer Tier signup + record plan limits", status: done, out: docs/00-day0-setup.md#palantir-developer-tier-limits, owner: claude-code, evidence: "AIP Developer Tier active 2026-10-14; limits in docs/02-foundry-notes.md (25 vCPU, 2 GPU, 60 object types, 60-120K tok/min, AIP tier SMALL, limited users)"}
+  - {id: D0-02, title: "Check Developer Console / OSDK / Ontology MCP on tier", status: done, fallback: "export curated tables; agent fully open-source; one product line in Foundry", owner: claude-code, evidence: "Developer Console, Ontology Manager, Pipeline Builder, AIP Logic, Workshop available; Ontology MCP is not a standalone app, verify in Developer Console once an Ontology exists"}
   - {id: D0-03, title: "Download CFPB 2024-2026 exports", status: done, owner: claude-code, evidence: "17 zips, zip integrity OK"}
   - {id: D0-04, title: "FDIC test call", status: done, owner: claude-code}
   - {id: D0-05, title: "GCP project us-central1, $10 budget alerts 50/90/100, 1-instance cap", status: blocked, owner: human, blocker: "gcloud auth login + gcloud auth application-default login + billing account", then: "claude-code: create project, link billing, enable run/artifactregistry/secretmanager/cloudbuild/billingbudgets APIs, budget, AR repo; max-instances=1 at deploy; install gcloud in WSL", needed_by: 2026-10-26}
@@ -146,15 +146,15 @@ tasks:
   - {id: W1-TUE-03, title: "Entity matching v1 (automated CFPB name -> FDIC cert) + hand-label 100 pairs, precision/recall", status: pending, owner: unassigned, target: "P>=0.95 R>=0.90", note: "current seed is manual for 11 banks only; need automated matcher over all 1,056 in-scope company names; hard cases: holding-co vs charter, Discover merger, TD two charters, Comenity blank NAMEHCR. Human must hand-label pairs.", out: [pipelines/entity_match.py, evals/entity_pairs.csv, docs/01-data-quality.md]}
   - {id: W1-TUE-04, title: "Reconcile row counts per export", status: done, evidence: "main.load_audit 0 mismatches"}
   - {id: W1-X-01, title: "Replay full window 2024-01-31..2026-08-31 + dbt build", status: done, owner: claude-code, evidence: "974 days 2024-01-01..2026-08-31; feed=fct=428,172 (31 late rows arrive after 08-31 by design; source 428,203); late rows 8,610 captured; dbt 39/39; incremental==full rebuild (0 diff)", note: "run_daily.sh ~5s/day (~1h) or replay.py --until + single dbt build (minutes). Needs data host."}
-  - {id: W1-WED-01, title: "Foundry: upload curated slice, rebuild cleaning in Pipeline Builder", status: blocked, blocker: D0-01, due: 2026-10-14}
-  - {id: W1-WED-02, title: "Ontology: Complaint + Institution object types, linked, owner property", status: blocked, blocker: D0-01}
-  - {id: W1-WED-03, title: "Workshop view: customer complaints for replayed day, filter product/issue", status: blocked, blocker: D0-01}
-  - {id: W1-WED-04, title: "docs/02-foundry-notes.md: every tier limit hit", status: blocked, blocker: D0-01}
+  - {id: W1-WED-01, title: "Foundry: upload curated slice, rebuild cleaning in Pipeline Builder", status: pending, unblocked: 2026-10-14, due: 2026-10-14}
+  - {id: W1-WED-02, title: "Ontology: Complaint + Institution object types, linked, owner property", status: pending, unblocked: 2026-10-14}
+  - {id: W1-WED-03, title: "Workshop view: customer complaints for replayed day, filter product/issue", status: pending, unblocked: 2026-10-14}
+  - {id: W1-WED-04, title: "docs/02-foundry-notes.md: every tier limit hit", status: pending, unblocked: 2026-10-14}
   - {id: W1-THU-01, title: "Hand-audit 200 complaints from held-out month (label noise)", status: pending, owner: human, note: "month from 2026-04..06 (D7)", out: evals/label_audit_200.csv}
   - {id: W1-THU-02, title: "Baseline classifier on local model; evals/classify.py macro-F1 per product + confusion matrix", status: pending, owner: unassigned, note: "Ollama qwen3.5:2b; if too slow, 5,000-complaint sample + cheap API for held-out month"}
   - {id: W1-THU-03, title: "Top 3 classifier failure patterns with examples", status: pending, depends: W1-THU-02}
-  - {id: W1-FRI-01, title: "AIP Logic classify+summarize writing back via action", status: blocked, blocker: D0-01}
-  - {id: W1-FRI-02, title: "Actions: Escalate, Assign, Mark reviewed; writes logged", status: blocked, blocker: D0-01}
+  - {id: W1-FRI-01, title: "AIP Logic classify+summarize writing back via action", status: pending, unblocked: 2026-10-14}
+  - {id: W1-FRI-02, title: "Actions: Escalate, Assign, Mark reviewed; writes logged", status: pending, unblocked: 2026-10-14}
   - {id: W1-FRI-03, title: "Triage backtest v0: daily risk score (arrival-day fields only), relief share in top 50 vs random", status: pending, owner: unassigned, depends: W1-X-01, note: "label got_relief; window to 2026-06-30; no leakage (no company_response/timely/public_response in features)"}
   - {id: W1-DR-01, title: "6 desk-research notes (docs/discovery/01..06)", status: done, owner: zcode, spec: docs/discovery/README.md, evidence: "docs/discovery/01..06-*.md; note 01 grounded in Export_13 stream (BofA Sep-Oct 2025: 1,783 rows, 40.6% relief, 99.55% timely, purchase-dispute issues 59.8% relief); notes 02-06 web-sourced with links; G1 gate item satisfied", done: 2026-10-12T20:35+05:30}
   - {id: W1-SIM-01, title: "Simulated stakeholder session 1 (Head of Complaints), labeled SIMULATED", status: pending, out: docs/discovery/sim-01-head-of-complaints.md}
@@ -184,3 +184,4 @@ log:
   - "2026-10-12 19:35 zcode: connected clone at D:\\foundary\\complaint-intelligence (junction data/raw -> D:\\foundary\\data\\raw; PAT in Windows credential manager). Fixed environments.zcode (has raw data, no DuckDB). Claimed W1-DR-01, lock on docs/discovery/."
   - "2026-10-12 20:35 zcode: W1-DR-01 done. Six notes in docs/discovery/ (01 voice-of-customer from Export 13 stream; 02 job postings; 03 regulator findings; 04 exam expectations; 05 10-K disclosures; 06 practitioner voice). Lock released. Key result: BofA Sep-Oct 2025 relief 40.6%, purchase-dispute issues 59.8% relief vs 40.6% base (H1 support), timely 99.55% (not a differentiator)."
   - "2026-10-14 claude-code: W1-X-01 done (full replay 428,172 rows, dbt 39/39). Palantir account registered by human; awaiting plan limits + tool availability (D0-01/02)."
+  - "2026-10-14 claude-code: Foundry reachable (human signed in, project complaint-intelligence created by human). D0-01/D0-02 done; W1-WED and W1-FRI Foundry tasks unblocked. Upload slice in D:/foundary/data/export (pipelines/export_slice.py). Next: upload institution.csv + complaint_sample_1k.csv, then Pipeline Builder."
