@@ -1,15 +1,17 @@
-"""Entity matching v1: CFPB company name -> FDIC certificate (or "no bank").
+"""Entity matching v2: CFPB company name -> FDIC certificate (or "no bank"). Match means: the company IS or OWNS the FDIC bank.
 
-Method
-  1. Normalize names (case, '&', punctuation, legal suffixes, generic words).
-  2. Score the CFPB name against every FDIC charter name AND every FDIC holding-company name (rapidfuzz).
-  3. A holding-company hit resolves to the largest-asset charter of that holding company (the deposit-taking bank).
-  4. Accept only if score >= THRESHOLD; otherwise the answer is "no bank" (credit unions, fintechs, collectors, bureaus).
+v1 -> v2 changes (from the 100 human-verified pairs, docs/entity-matching-review.md)
+  - candidates include charters ENDED since 2023-12-31 (merged/renamed banks that CFPB still files under)
+  - state conflict: a US state named in the CFPB name must match the bank's state (v2.1, added after the fresh-50 test; not yet re-tested)
+  - stricter acceptance: a fuzzy hit is accepted only with name evidence, which stops non-banks from colliding with small banks
+        reject if the CFPB name has a non-bank legal form (LLC/LP/LLP/PC) and no bank word
+        accept if  raw name == charter name, or raw name == holding-company name,
+                   or >= 2 distinctive tokens with a bank word / FINANCIAL,
+                   or 1 distinctive token with a bank word and score >= 95
+  - human-reviewed overrides (pipelines/dbt/seeds/entity_overrides.csv) win over the algorithm in the final table
 
-Writes table main.entity_match (company, n_complaints, cert, institution, holding_company, state, assets_bn, score, match_type,
-alt_candidates) and data/eval/entity_match.csv. Date-aware overrides (Discover merger) stay in the dbt seed, not here.
-
-Usage: uv run python pipelines/entity_match.py [--threshold 88]
+Writes main.entity_match_core (algorithm only) and main.entity_match (overrides applied); CSVs in data/eval/.
+Usage: uv run python pipelines/entity_match.py [--threshold 90]
 """
 
 import argparse
@@ -24,7 +26,9 @@ LEGAL = {"INC", "INCORPORATED", "LLC", "LP", "LLP", "LTD", "CORP", "CORPORATION"
          "OF", "AND"}
 GENERIC = {"HOLDINGS", "HOLDING", "HOLDCO", "GROUP", "BANCORP", "BANCORPORATION", "BANCSHARES", "BCORP", "FINANCIAL", "SERVICES",
            "USA", "US", "BANK", "BANKS", "TRUST", "SAVINGS", "NATIONAL", "ASSOCIATION", "FSB", "SSB", "STATE"}
-NATIONAL = [("NATIONAL ASSOCIATION", ""), ("N A", ""), ("N.A.", "")]
+BANKWORD = re.compile(r"\b(BANK|BANKS|BANKING|BANKERS|BANC\w*|BANCORP|BANCSHARES|BCORP|TRUST|SAVINGS)\b", re.I)
+FINWORD = re.compile(r"\bFINANCIAL\b", re.I)
+NONBANK_FORM = re.compile(r"\b(LLC|L\.L\.C\.|LP|L\.P\.|LLP|P\.C\.|PLLC)\b", re.I)
 
 
 def norm(s, drop_generic=True):
@@ -32,14 +36,57 @@ def norm(s, drop_generic=True):
     s = re.sub(r"\bN\.?\s?A\.?\b", " ", s)
     s = re.sub(r"[^A-Z0-9 ]+", " ", s)
     toks = [t for t in s.split() if t not in LEGAL and not (drop_generic and t in GENERIC)]
-    if not toks:  # name made only of generic words: keep them so it can still match itself
+    if not toks:
         toks = [t for t in s.split() if t not in LEGAL]
     return " ".join(toks)
 
 
 def similarity(a, b, **kwargs):
-    """Strict similarity: full-string and token-order-insensitive ratios only (no partial matching)."""
     return max(fuzz.ratio(a, b), fuzz.token_sort_ratio(a, b))
+
+
+STATES = {"ALABAMA": "AL", "ALASKA": "AK", "ARIZONA": "AZ", "ARKANSAS": "AR", "CALIFORNIA": "CA", "COLORADO": "CO", "CONNECTICUT": "CT",
+          "DELAWARE": "DE", "FLORIDA": "FL", "GEORGIA": "GA", "HAWAII": "HI", "IDAHO": "ID", "ILLINOIS": "IL", "INDIANA": "IN", "IOWA": "IA",
+          "KANSAS": "KS", "KENTUCKY": "KY", "LOUISIANA": "LA", "MAINE": "ME", "MARYLAND": "MD", "MASSACHUSETTS": "MA", "MICHIGAN": "MI",
+          "MINNESOTA": "MN", "MISSISSIPPI": "MS", "MISSOURI": "MO", "MONTANA": "MT", "NEBRASKA": "NE", "NEVADA": "NV", "NEW HAMPSHIRE": "NH",
+          "NEW JERSEY": "NJ", "NEW MEXICO": "NM", "NEW YORK": "NY", "NORTH CAROLINA": "NC", "NORTH DAKOTA": "ND", "OHIO": "OH", "OKLAHOMA": "OK",
+          "OREGON": "OR", "PENNSYLVANIA": "PA", "RHODE ISLAND": "RI", "SOUTH CAROLINA": "SC", "SOUTH DAKOTA": "SD", "TENNESSEE": "TN",
+          "TEXAS": "TX", "UTAH": "UT", "VERMONT": "VT", "VIRGINIA": "VA", "WEST VIRGINIA": "WV", "WASHINGTON": "WA", "WISCONSIN": "WI",
+          "WYOMING": "WY", "PUERTO RICO": "PR"}
+
+
+def named_states(company):
+    """State abbreviations whose full names appear in the company name (longest names first so 'WEST VIRGINIA' hides 'VIRGINIA')."""
+    text, found = company.upper(), set()
+    for name in sorted(STATES, key=len, reverse=True):
+        if re.search(rf"\b{name}\b", text):
+            found.add(STATES[name])
+            text = re.sub(rf"\b{name}\b", " ", text)
+    return found
+
+
+def accept(company, score, cand, thr):
+    """Return (accepted, reason). cand has name, hc, kind."""
+    if score < thr:
+        return False, "below_threshold"
+    raw = norm(company, drop_generic=False)
+    toks = norm(company).split()
+    bank = bool(BANKWORD.search(company))
+    fin = bool(FINWORD.search(company))
+    if NONBANK_FORM.search(company) and not bank:
+        return False, "nonbank_legal_form"
+    named = named_states(company)
+    if named and cand.get("state") and cand["state"] not in named and raw != norm(cand["name"], drop_generic=False):
+        return False, "state_conflict"
+    if raw == norm(cand["name"], drop_generic=False):
+        return True, "raw_equals_charter"
+    if cand["hc"] and raw == norm(cand["hc"], drop_generic=False):
+        return True, "raw_equals_holding_company"
+    if len(toks) >= 2 and (bank or fin):
+        return True, "two_tokens_with_bank_or_financial"
+    if len(toks) == 1 and bank and score >= 95:
+        return True, "one_token_with_bank_word"
+    return False, "insufficient_name_evidence"
 
 
 def main():
@@ -49,14 +96,12 @@ def main():
     a = ap.parse_args()
 
     con = duckdb.connect(a.db)
-    fdic = con.execute("""SELECT CERT, NAME, NAMEHCR, STALP, coalesce(ASSET, 0) AS ASSET, ACTIVE FROM fdic_all_institutions""").df()
+    fdic = con.execute("""SELECT CERT, NAME, NAMEHCR, STALP, coalesce(ASSET, 0) AS ASSET, ACTIVE, ENDEFYMD FROM fdic_all_institutions""").df()
     fdic["name_n"] = fdic.NAME.map(norm)
     fdic["hc_n"] = fdic.NAMEHCR.fillna("").map(norm)
     companies = con.execute("""SELECT company, count(*) AS n FROM analytics.fct_complaint GROUP BY 1 ORDER BY n DESC""").df()
 
-    # choices: (normalized text, cert, kind). Holding-company choices resolve to the biggest charter of that HC.
-    big_by_hc = (fdic[fdic.hc_n != ""].sort_values("ASSET", ascending=False).groupby("hc_n").head(1)
-                 .set_index("hc_n")[["CERT", "NAME", "NAMEHCR", "STALP", "ASSET"]])
+    big_by_hc = (fdic[fdic.hc_n != ""].sort_values(["ACTIVE", "ASSET"], ascending=False).groupby("hc_n").head(1).set_index("hc_n"))
     choices, meta = [], []
     for r in fdic.itertuples():
         choices.append(r.name_n)
@@ -69,11 +114,12 @@ def main():
     out = []
     for c in companies.itertuples():
         q = norm(c.company)
+        base = dict(company=c.company, n_complaints=c.n, cert=None, institution=None, holding_company=None, state=None, assets_bn=None,
+                    active=None, ended=None, score=0.0, match_type="no_bank", reason="no_candidates", alt_candidates="[]")
         if not q:
-            out.append((c.company, c.n, None, None, None, None, None, 0.0, "no_bank", "[]"))
+            out.append(base)
             continue
         hits = process.extract(q, choices, scorer=similarity, limit=80, score_cutoff=60)
-        # de-duplicate by cert, keep best score per cert
         seen, cands = set(), []
         for text, score, idx in hits:
             kind, cert = meta[idx]
@@ -81,41 +127,56 @@ def main():
                 continue
             seen.add(cert)
             cands.append((cert, kind, float(score)))
-        alts = json.dumps([{"cert": int(k), "name": by_cert.loc[k, "NAME"], "kind": kd, "score": round(sc, 1)} for k, kd, sc in cands[:3]])
-        if cands and cands[0][2] >= a.threshold:
-            top = cands[0][2]
-            tied = [x for x in cands if top - x[2] < 0.5]
-            cert, kind, sc = max(tied, key=lambda x: (x[1] == "holding_company", float(by_cert.loc[x[0], "ASSET"])))  # tie: holding-company match first, then largest bank
-            score = sc
-            b = by_cert.loc[cert]
-            out.append((c.company, c.n, int(cert), b.NAME, (b.NAMEHCR if pd.notna(b.NAMEHCR) and b.NAMEHCR else None), b.STALP, round(float(b.ASSET) / 1e6, 2) if pd.notna(b.ASSET) else None, round(score, 1), kind, alts))
-        else:
-            best = cands[0][2] if cands else 0.0
-            out.append((c.company, c.n, None, None, None, None, None, round(best, 1), "no_bank", alts))
+        base["alt_candidates"] = json.dumps([{"cert": int(k), "name": by_cert.loc[k, "NAME"], "kind": kd, "score": round(sc, 1)}
+                                              for k, kd, sc in cands[:3]])
+        if not cands:
+            out.append(base)
+            continue
+        top = cands[0][2]
+        tied = [x for x in cands if top - x[2] < 0.5]
+        # tie-break: holding-company hit, then active charter, then largest bank
+        cert, kind, sc = max(tied, key=lambda x: (x[1] == "holding_company", int(by_cert.loc[x[0], "ACTIVE"]), float(by_cert.loc[x[0], "ASSET"])))
+        b = by_cert.loc[cert]
+        ok, reason = accept(c.company, sc, {"name": b.NAME, "hc": b.NAMEHCR if pd.notna(b.NAMEHCR) else "", "state": b.STALP}, a.threshold)
+        base.update(score=round(sc, 1), reason=reason)
+        if ok:
+            base.update(cert=int(cert), institution=b.NAME, holding_company=(b.NAMEHCR if pd.notna(b.NAMEHCR) and b.NAMEHCR else None),
+                        state=b.STALP, assets_bn=round(float(b.ASSET) / 1e6, 2), active=int(b.ACTIVE),
+                        ended=(b.ENDEFYMD if int(b.ACTIVE) == 0 else None), match_type=kind)
+        out.append(base)
 
-    res = pd.DataFrame(out, columns=["company", "n_complaints", "cert", "institution", "holding_company", "state", "assets_bn", "score",
-                                     "match_type", "alt_candidates"])
-    con.register("res_df", res)
-    con.execute("CREATE OR REPLACE TABLE entity_match AS SELECT * FROM res_df")
-    res.to_csv("data/eval/entity_match.csv", index=False)
+    core = pd.DataFrame(out)
+    # overrides: human review beats the algorithm. For companies with several dated rows use the one valid today (valid_to = far future).
+    ov = pd.read_csv("pipelines/dbt/seeds/entity_overrides.csv")
+    ov["valid_from"] = pd.to_datetime(ov.valid_from)
+    ov = ov.sort_values(["cfpb_company", "valid_from"]).groupby("cfpb_company").tail(1).set_index("cfpb_company")
+    final = core.copy()
+    n_ov = 0
+    for i, r in final.iterrows():
+        if r.company in ov.index:
+            o = ov.loc[r.company]
+            n_ov += 1
+            if pd.isna(o.fdic_cert):
+                final.loc[i, ["cert", "institution", "holding_company", "state", "assets_bn", "active", "ended"]] = None
+                final.loc[i, "match_type"], final.loc[i, "reason"] = "no_bank", "override_no_bank"
+            else:
+                b = by_cert.loc[int(o.fdic_cert)]
+                final.loc[i, "cert"] = int(o.fdic_cert)
+                final.loc[i, "institution"], final.loc[i, "state"] = b.NAME, b.STALP
+                final.loc[i, "holding_company"] = b.NAMEHCR if pd.notna(b.NAMEHCR) and b.NAMEHCR else None
+                final.loc[i, "assets_bn"] = round(float(b.ASSET) / 1e6, 2)
+                final.loc[i, "active"], final.loc[i, "ended"] = int(b.ACTIVE), (b.ENDEFYMD if int(b.ACTIVE) == 0 else None)
+                final.loc[i, "match_type"], final.loc[i, "reason"] = "override_" + o.relation, "override"
 
-    matched = res[res.cert.notna()]
-    print(f"{len(res)} companies; matched {len(matched)} ({matched.n_complaints.sum() / res.n_complaints.sum():.1%} of complaints); "
-          f"no-bank {len(res) - len(matched)}")
-    print(matched.head(40)[["company", "institution", "cert", "score", "match_type"]].to_string(max_colwidth=42))
-
-    # sanity check on what we already know (seed + exclusion list): not the evaluation, just a smoke test
-    seed = con.execute("SELECT * FROM read_csv_auto('pipelines/dbt/seeds/entity_map_seed.csv')").df()
-    seed = seed[seed.role.isin(["customer", "peer"])]
-    excl = con.execute("SELECT * FROM read_csv_auto('pipelines/dbt/seeds/company_exclusions.csv')").df()
-    r = res.set_index("company")
-    ok = sum(int(r.loc[x.cfpb_company, "cert"] == x.fdic_cert) for x in seed.itertuples() if x.cfpb_company in r.index)
-    print(f"\nsmoke test, known banks: {ok}/{len(seed)} correct cert")
-    for x in seed.itertuples():
-        if x.cfpb_company in r.index and r.loc[x.cfpb_company, "cert"] != x.fdic_cert:
-            print("  MISS:", x.cfpb_company, "->", r.loc[x.cfpb_company, "cert"], r.loc[x.cfpb_company, "institution"], "| expected", x.fdic_cert)
-    wrong_nb = [x.cfpb_company for x in excl.itertuples() if x.cfpb_company in r.index and pd.notna(r.loc[x.cfpb_company, "cert"])]
-    print(f"smoke test, known non-banks: {len(excl) - len(wrong_nb)}/{len(excl)} correctly 'no bank'; false matches: {wrong_nb}")
+    for name, df in (("entity_match_core", core), ("entity_match", final)):
+        con.register("tmp_df", df)
+        con.execute(f"CREATE OR REPLACE TABLE {name} AS SELECT * FROM tmp_df")
+        con.unregister("tmp_df")
+        df.to_csv(f"data/eval/{name}.csv", index=False)
+    for name, df in (("core (algorithm only)", core), ("final (with overrides)", final)):
+        m = df[df.cert.notna()]
+        print(f"{name}: {len(df)} companies; matched {len(m)} ({m.n_complaints.sum() / df.n_complaints.sum():.1%} of complaints); overrides applied {n_ov}")
+    print(core.reason.value_counts().to_string())
 
 
 if __name__ == "__main__":

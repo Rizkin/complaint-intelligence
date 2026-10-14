@@ -64,3 +64,25 @@ be used as a complaints-per-assets denominator.
 Morgan Stanley & Co. LLC (broker-dealer), Halsted Financial (collector), Bridge IT / Brigit (fintech), Lincoln Financial (insurer), Heartland Financial USA
 (acquired by UMB 2025), First Credit Corporation, Devon Financial Services, People Trust (CDFI), Barker Financial, National Commercial Services, United Shore
 Financial Services, Clayton Holdings, AmeriFirst Financial.
+
+## Results (human verdicts are the gold; ownership-only unless stated)
+
+| Matcher | Test set | Precision | Recall | Notes |
+|---|---|---:|---:|---|
+| v1 (active charters, loose fuzzy rule) | 100 pairs | 0.787 | 0.822 | complaint-weighted 0.928 / 0.841. Gate (0.95 / 0.90) not met |
+| v2 algorithm only (ended charters + acceptance rules) | same 100 pairs | 0.921 | 0.833 | **development check**: rules were tuned after seeing these errors; the 100 are also baked into the overrides |
+| **v2 with overrides** | **fresh 50 pairs** (not seen when the rules were written) | **0.900** (18/20) | **0.947** (18/19) | complaint-weighted 0.999 / 0.9996. Recall passes, precision misses by one error |
+| v2.1 algorithm only (+ state-conflict rule) | same fresh 50 | 0.947 (18/19) | 0.947 | **post-hoc**: the rule was added after seeing these errors, so this is not a clean test. Needs a new sample |
+
+Fresh-50 errors: River Financial Inc (name shared by a Bitcoin fintech and an Alabama bank holding company, 2 complaints) and First Bancorp North Carolina
+(fuzzy hit on a South Carolina bank; fixed by the state rule and by an override).
+
+Small-sample caveat: 20 predicted matches mean one error moves precision by 5 points. Treat 0.90 to 0.95 as "near target", not as a precise measurement.
+
+## What the matcher can and cannot do
+
+- Does well: exact bank names, holding-company names, big banks, obvious non-banks.
+- Needs overrides: mergers and renames (candidate list now includes charters ended since 2023-12-31, but successor links are manual), parent chains with no FDIC
+  holding-company record (HSBC, BMW, Bread, NYCB -> Flagstar), and name collisions between unrelated companies.
+- The production table is `entity_match` (algorithm + 33 overrides in `pipelines/dbt/seeds/entity_overrides.csv`); `entity_match_core` is the algorithm alone.
+

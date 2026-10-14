@@ -18,12 +18,16 @@ import pandas as pd
 ap = argparse.ArgumentParser()
 ap.add_argument("--sheet", default="data/eval/entity_pairs_100.xlsx")
 ap.add_argument("--out", default="evals/results/entity_match_eval.json")
+ap.add_argument("--pred-csv", help="score this matcher output (cfpb company, cert) instead of the predictions stored in the sheet")
 a = ap.parse_args()
 
 raw = pd.read_excel(a.sheet, sheet_name="Pairs")
 raw = raw.rename(columns={"correct_cert (if 'Wrong, different bank')": "correct_cert", "broad_partner_certs (not ownership)": "partners"})
 if "partners" not in raw:
     raw["partners"] = None
+if a.pred_csv:  # re-score a different matcher output against the same human verdicts (predictions in the sheet are the v1 ones)
+    p = pd.read_csv(a.pred_csv).drop_duplicates("company").set_index("company")["cert"]
+    raw["predicted_cert"] = raw["cfpb_company"].map(p)
 raw = raw[raw["verdict"].notna() & (raw["verdict"] != "Unsure")].copy()
 
 

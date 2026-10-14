@@ -1,0 +1,64 @@
+{
+  "strict_ownership": {
+    "rows_scored": 50,
+    "unweighted": {
+      "precision": 0.9,
+      "recall": 0.9474
+    },
+    "weighted_by_complaints": {
+      "precision": 0.9994,
+      "recall": 0.9996
+    },
+    "predicted_matches": 20,
+    "gold_banks": 19,
+    "gate_precision>=0.95": false,
+    "gate_recall>=0.90": true,
+    "errors": [
+      {
+        "cfpb_company": "River Financial Inc.",
+        "complaints": "2",
+        "predicted_cert": "58255.0",
+        "gold_cert": NaN,
+        "verdict": "Wrong - no FDIC bank exists"
+      },
+      {
+        "cfpb_company": "First Bancorp North Carolina",
+        "complaints": "6",
+        "predicted_cert": "2107.0",
+        "gold_cert": "15019.0",
+        "verdict": "Wrong - different bank"
+      }
+    ]
+  },
+  "broad_owner_or_partner": {
+    "rows_scored": 50,
+    "unweighted": {
+      "precision": 0.9,
+      "recall": 0.9474
+    },
+    "weighted_by_complaints": {
+      "precision": 0.9994,
+      "recall": 0.9996
+    },
+    "predicted_matches": 20,
+    "gold_banks": 19,
+    "gate_precision>=0.95": false,
+    "gate_recall>=0.90": true,
+    "errors": [
+      {
+        "cfpb_company": "River Financial Inc.",
+        "complaints": "2",
+        "predicted_cert": "58255.0",
+        "gold_cert": NaN,
+        "verdict": "Wrong - no FDIC bank exists"
+      },
+      {
+        "cfpb_company": "First Bancorp North Carolina",
+        "complaints": "6",
+        "predicted_cert": "2107.0",
+        "gold_cert": "15019.0",
+        "verdict": "Wrong - different bank"
+      }
+    ]
+  }
+}

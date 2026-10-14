@@ -25,6 +25,8 @@ People Trust,,2011-12-01,9999-12-31,none,"nonprofit CDFI with a former credit-un
 CADENCE BANK,11813.0,2011-12-01,2026-02-01,is_bank,Cadence Bank (MS) merged into Huntington 2026-02-01; test row 89,human review 2026-10-15
 CADENCE BANK,6560.0,2026-02-01,9999-12-31,is_bank,successor: The Huntington National Bank; test row 89,human review 2026-10-15
 "BMW Financial Services NA, LLC",35141.0,2011-12-01,9999-12-31,owns_bank,BMW Bank of North America is its direct subsidiary; test row 98,human review 2026-10-15
+River Financial Inc.,,2011-12-01,9999-12-31,none,Bitcoin fintech; not River Financial Corp (AL) which owns River Bank & Trust; fresh-50 row 7,human review 2026-10-15
+First Bancorp North Carolina,15019.0,2011-12-01,9999-12-31,owns_bank,First Bank (NC); fresh-50 row 43,human review 2026-10-15
 Barker Financial LLC,,2011-12-01,9999-12-31,none,test row 7,human review 2026-10-15
 "National Commercial Services, Inc",,2011-12-01,9999-12-31,none,test row 25,human review 2026-10-15
 "United Shore Financial Services, LLC",,2011-12-01,9999-12-31,none,mortgage lender; test row 32,human review 2026-10-15

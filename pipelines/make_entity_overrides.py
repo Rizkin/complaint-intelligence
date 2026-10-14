@@ -42,6 +42,8 @@ ROWS = [
     ("CADENCE BANK", 11813, EPOCH, "2026-02-01", "is_bank", "Cadence Bank (MS) merged into Huntington 2026-02-01; test row 89"),
     ("CADENCE BANK", 6560, "2026-02-01", FAR, "is_bank", "successor: The Huntington National Bank; test row 89"),
     ("BMW Financial Services NA, LLC", 35141, EPOCH, FAR, "owns_bank", "BMW Bank of North America is its direct subsidiary; test row 98"),
+    ("River Financial Inc.", None, EPOCH, FAR, "none", "Bitcoin fintech; not River Financial Corp (AL) which owns River Bank & Trust; fresh-50 row 7"),
+    ("First Bancorp North Carolina", 15019, EPOCH, FAR, "owns_bank", "First Bank (NC); fresh-50 row 43"),
     # test-sheet rows judged wrong by the human
     ("Barker Financial LLC", None, EPOCH, FAR, "none", "test row 7"),
     ("National Commercial Services, Inc", None, EPOCH, FAR, "none", "test row 25"),

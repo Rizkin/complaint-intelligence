@@ -1,0 +1,211 @@
+{
+  "strict_ownership": {
+    "rows_scored": 100,
+    "unweighted": {
+      "precision": 0.9211,
+      "recall": 0.8333
+    },
+    "weighted_by_complaints": {
+      "precision": 0.8907,
+      "recall": 0.7795
+    },
+    "predicted_matches": 38,
+    "gold_banks": 42,
+    "gate_precision>=0.95": false,
+    "gate_recall>=0.90": false,
+    "errors": [
+      {
+        "cfpb_company": "HSBC NORTH AMERICA HOLDINGS INC.",
+        "complaints": "517",
+        "predicted_cert": NaN,
+        "gold_cert": "57890.0",
+        "verdict": "Wrong - different bank"
+      },
+      {
+        "cfpb_company": "Bread Financial Holdings, Inc.",
+        "complaints": "8226",
+        "predicted_cert": NaN,
+        "gold_cert": "57570.0",
+        "verdict": "Wrong - different bank"
+      },
+      {
+        "cfpb_company": "INDEPENDENT BANK GROUP, INC.",
+        "complaints": "11",
+        "predicted_cert": "9712.0",
+        "gold_cert": "33555.0",
+        "verdict": "Wrong - different bank"
+      },
+      {
+        "cfpb_company": "NEW YORK COMMUNITY BANCORP INC",
+        "complaints": "351",
+        "predicted_cert": NaN,
+        "gold_cert": "32541.0",
+        "verdict": "Wrong - different bank"
+      },
+      {
+        "cfpb_company": "DISCOVER BANK",
+        "complaints": "6834",
+        "predicted_cert": "5649.0",
+        "gold_cert": "4297.0",
+        "verdict": "Wrong - different bank"
+      },
+      {
+        "cfpb_company": "CADENCE BANK",
+        "complaints": "129",
+        "predicted_cert": "11813.0",
+        "gold_cert": "6560.0",
+        "verdict": "Wrong - different bank"
+      },
+      {
+        "cfpb_company": "BMW Financial Services NA, LLC",
+        "complaints": "8",
+        "predicted_cert": NaN,
+        "gold_cert": "35141.0",
+        "verdict": "Wrong - different bank"
+      }
+    ]
+  },
+  "broad_owner_or_partner": {
+    "rows_scored": 100,
+    "unweighted": {
+      "precision": 0.9211,
+      "recall": 0.6604
+    },
+    "weighted_by_complaints": {
+      "precision": 0.8907,
+      "recall": 0.6239
+    },
+    "predicted_matches": 38,
+    "gold_banks": 53,
+    "gate_precision>=0.95": false,
+    "gate_recall>=0.90": false,
+    "errors": [
+      {
+        "cfpb_company": "HSBC NORTH AMERICA HOLDINGS INC.",
+        "complaints": "517",
+        "predicted_cert": NaN,
+        "gold_cert": "57890.0",
+        "verdict": "Wrong - different bank"
+      },
+      {
+        "cfpb_company": "Bread Financial Holdings, Inc.",
+        "complaints": "8226",
+        "predicted_cert": NaN,
+        "gold_cert": "57570.0",
+        "verdict": "Wrong - different bank"
+      },
+      {
+        "cfpb_company": "Bright Capital Inc",
+        "complaints": "23",
+        "predicted_cert": NaN,
+        "gold_cert": NaN,
+        "verdict": "Right"
+      },
+      {
+        "cfpb_company": "Populus Financial Group, Inc. (F/K/A Ace Cash Express)",
+        "complaints": "7",
+        "predicted_cert": NaN,
+        "gold_cert": NaN,
+        "verdict": "Right"
+      },
+      {
+        "cfpb_company": "INDEPENDENT BANK GROUP, INC.",
+        "complaints": "11",
+        "predicted_cert": "9712.0",
+        "gold_cert": "33555.0",
+        "verdict": "Wrong - different bank"
+      },
+      {
+        "cfpb_company": "NEW YORK COMMUNITY BANCORP INC",
+        "complaints": "351",
+        "predicted_cert": NaN,
+        "gold_cert": "32541.0",
+        "verdict": "Wrong - different bank"
+      },
+      {
+        "cfpb_company": "Imprint Payments, Inc.",
+        "complaints": "318",
+        "predicted_cert": NaN,
+        "gold_cert": NaN,
+        "verdict": "Right"
+      },
+      {
+        "cfpb_company": "FinCo Services Inc DBA Current",
+        "complaints": "1348",
+        "predicted_cert": NaN,
+        "gold_cert": NaN,
+        "verdict": "Right"
+      },
+      {
+        "cfpb_company": "DISCOVER BANK",
+        "complaints": "6834",
+        "predicted_cert": "5649.0",
+        "gold_cert": "4297.0",
+        "verdict": "Wrong - different bank"
+      },
+      {
+        "cfpb_company": "Revolut Technologies Inc.",
+        "complaints": "199",
+        "predicted_cert": NaN,
+        "gold_cert": NaN,
+        "verdict": "Right"
+      },
+      {
+        "cfpb_company": "Chime Financial Inc",
+        "complaints": "15484",
+        "predicted_cert": NaN,
+        "gold_cert": NaN,
+        "verdict": "Right"
+      },
+      {
+        "cfpb_company": "CADENCE BANK",
+        "complaints": "129",
+        "predicted_cert": "11813.0",
+        "gold_cert": "6560.0",
+        "verdict": "Wrong - different bank"
+      },
+      {
+        "cfpb_company": "CNG FINANCIAL CORPORATION",
+        "complaints": "7",
+        "predicted_cert": NaN,
+        "gold_cert": NaN,
+        "verdict": "Right"
+      },
+      {
+        "cfpb_company": "OPORTUN FINANCIAL CORPORATION",
+        "complaints": "53",
+        "predicted_cert": NaN,
+        "gold_cert": NaN,
+        "verdict": "Right"
+      },
+      {
+        "cfpb_company": "Bilt Technologies, Inc.",
+        "complaints": "570",
+        "predicted_cert": NaN,
+        "gold_cert": NaN,
+        "verdict": "Right"
+      },
+      {
+        "cfpb_company": "Exto Inc.",
+        "complaints": "158",
+        "predicted_cert": NaN,
+        "gold_cert": NaN,
+        "verdict": "Right"
+      },
+      {
+        "cfpb_company": "Opportunity Financial, LLC",
+        "complaints": "8",
+        "predicted_cert": NaN,
+        "gold_cert": NaN,
+        "verdict": "Right"
+      },
+      {
+        "cfpb_company": "BMW Financial Services NA, LLC",
+        "complaints": "8",
+        "predicted_cert": NaN,
+        "gold_cert": "35141.0",
+        "verdict": "Wrong - different bank"
+      }
+    ]
+  }
+}
