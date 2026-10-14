@@ -27,3 +27,13 @@ models:
       - unique_combination:
           arguments:
             columns: [fdic_cert, report_date]
+
+  - name: stg_entity_match_core
+    columns:
+      - name: cfpb_company
+        data_tests: [unique, not_null]
+
+  - name: stg_fdic_all_institutions
+    columns:
+      - name: fdic_cert
+        data_tests: [unique, not_null]

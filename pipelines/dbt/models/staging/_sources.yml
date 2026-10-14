@@ -16,3 +16,13 @@ sources:
         description: FDIC BankFind institution records for the certs in entity_map_seed.
       - name: fdic_financials
         description: FDIC quarterly financials (thousands of USD) for the same certs.
+      - name: entity_match_core
+        description: Algorithm-only CFPB company -> FDIC bank matches (pipelines/entity_match.py). Overrides are applied in dbt.
+        columns:
+          - name: company
+            data_tests: [unique, not_null]
+      - name: fdic_all_institutions
+        description: All active FDIC institutions plus charters ended since 2023-12-31 (pipelines/fetch_fdic_all.py).
+        columns:
+          - name: CERT
+            data_tests: [unique, not_null]

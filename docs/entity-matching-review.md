@@ -73,6 +73,7 @@ Financial Services, Clayton Holdings, AmeriFirst Financial.
 | v2 algorithm only (ended charters + acceptance rules) | same 100 pairs | 0.921 | 0.833 | **development check**: rules were tuned after seeing these errors; the 100 are also baked into the overrides |
 | **v2 with overrides** | **fresh 50 pairs** (not seen when the rules were written) | **0.900** (18/20) | **0.947** (18/19) | complaint-weighted 0.999 / 0.9996. Recall passes, precision misses by one error |
 | v2.1 algorithm only (+ state-conflict rule) | same fresh 50 | 0.947 (18/19) | 0.947 | **post-hoc**: the rule was added after seeing these errors, so this is not a clean test. Needs a new sample |
+| v2.2 algorithm only (+ 'National Association' suffix, + name-only match for banks >= $5B) | dev 100 / same fresh 50 | 0.925 / 0.947 | 0.841 / 0.947 | **post-hoc**: found while wiring into dbt (Citibank N.A., Santander Holdings USA were wrongly rejected by v2). Dev-100 and fresh-50 both unchanged or slightly better |
 
 Fresh-50 errors: River Financial Inc (name shared by a Bitcoin fintech and an Alabama bank holding company, 2 complaints) and First Bancorp North Carolina
 (fuzzy hit on a South Carolina bank; fixed by the state rule and by an override).
@@ -85,4 +86,23 @@ Small-sample caveat: 20 predicted matches mean one error moves precision by 5 po
 - Needs overrides: mergers and renames (candidate list now includes charters ended since 2023-12-31, but successor links are manual), parent chains with no FDIC
   holding-company record (HSBC, BMW, Bread, NYCB -> Flagstar), and name collisions between unrelated companies.
 - The production table is `entity_match` (algorithm + 33 overrides in `pipelines/dbt/seeds/entity_overrides.csv`); `entity_match_core` is the algorithm alone.
+
+## Wired into dbt (2026-10-15)
+
+Order: `fetch_fdic_all.py` -> `make_entity_overrides.py` -> `entity_match.py` -> `dbt build` (use `--full-refresh` when the entity mapping changes: `fct_complaint` is incremental).
+
+| dbt object | Role |
+|---|---|
+| `entity_overrides` (seed) | human-reviewed, dated rows |
+| `stg_entity_match_core`, `stg_fdic_all_institutions` | staging of the matcher output and the FDIC candidate file |
+| `int_company_entity` | company-level, date-aware: overrides first, algorithm for the rest |
+| `int_complaint_entity` | per complaint: curated seed (customer/peer/peer_history) > exclusions (bureau, credit union, fintech, processor) > matcher (`other_bank`) > `non_bank` |
+| `dim_institution` | every matched bank (136 certs), not only the customer and 10 peers; size from FDIC financials where pulled, else the institution file |
+| tests added | no overlapping override dates; every override cert exists in FDIC; no complaint dropped or duplicated; no `unmapped` role |
+
+Effect on complaints (428,172): the former `unmapped` 85,500 became `other_bank` 51,646 (125 certs) and `non_bank` 33,854. The customer, peer, peer_history,
+credit_bureau, fintech, credit_union and processor counts are identical to before; 54 of 54 dbt tests pass; incremental `fct_complaint` equals a full rebuild.
+
+Known leftovers (low volume, left for a human override rather than guessed): Provident Financial Services (29) and Nelnet Inc (21) are real bank owners the name
+rules still reject; Synovus Bank complaints after 2026-01-02 have no successor row.
 

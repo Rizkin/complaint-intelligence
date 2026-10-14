@@ -2,6 +2,7 @@
 
 v1 -> v2 changes (from the 100 human-verified pairs, docs/entity-matching-review.md)
   - candidates include charters ENDED since 2023-12-31 (merged/renamed banks that CFPB still files under)
+  - v2.2 (post-hoc): 'National Association' is a charter suffix in exact-name comparison; name-only match accepted for banks with assets >= $5B
   - state conflict: a US state named in the CFPB name must match the bank's state (v2.1, added after the fresh-50 test; not yet re-tested)
   - stricter acceptance: a fuzzy hit is accepted only with name evidence, which stops non-banks from colliding with small banks
         reject if the CFPB name has a non-bank legal form (LLC/LP/LLP/PC) and no bank word
@@ -28,14 +29,18 @@ GENERIC = {"HOLDINGS", "HOLDING", "HOLDCO", "GROUP", "BANCORP", "BANCORPORATION"
            "USA", "US", "BANK", "BANKS", "TRUST", "SAVINGS", "NATIONAL", "ASSOCIATION", "FSB", "SSB", "STATE"}
 BANKWORD = re.compile(r"\b(BANK|BANKS|BANKING|BANKERS|BANC\w*|BANCORP|BANCSHARES|BCORP|TRUST|SAVINGS)\b", re.I)
 FINWORD = re.compile(r"\bFINANCIAL\b", re.I)
+LARGE_BANK_BN = 5.0  # $5B: a name-only match to a bank this size is plausible; tiny look-alikes (Devon, Halstead) are not
 NONBANK_FORM = re.compile(r"\b(LLC|L\.L\.C\.|LP|L\.P\.|LLP|P\.C\.|PLLC)\b", re.I)
+
+
+CHARTER_SUFFIX = {"NATIONAL", "ASSOCIATION"}
 
 
 def norm(s, drop_generic=True):
     s = (s or "").upper().replace("&", " AND ")
     s = re.sub(r"\bN\.?\s?A\.?\b", " ", s)
     s = re.sub(r"[^A-Z0-9 ]+", " ", s)
-    toks = [t for t in s.split() if t not in LEGAL and not (drop_generic and t in GENERIC)]
+    toks = [t for t in s.split() if t not in LEGAL and not (drop_generic and t in GENERIC) and (drop_generic or t not in CHARTER_SUFFIX)]
     if not toks:
         toks = [t for t in s.split() if t not in LEGAL]
     return " ".join(toks)
@@ -86,6 +91,8 @@ def accept(company, score, cand, thr):
         return True, "two_tokens_with_bank_or_financial"
     if len(toks) == 1 and bank and score >= 95:
         return True, "one_token_with_bank_word"
+    if score >= 95 and (cand.get("assets_bn") or 0) >= LARGE_BANK_BN:
+        return True, "large_bank_name_match"
     return False, "insufficient_name_evidence"
 
 
@@ -137,7 +144,7 @@ def main():
         # tie-break: holding-company hit, then active charter, then largest bank
         cert, kind, sc = max(tied, key=lambda x: (x[1] == "holding_company", int(by_cert.loc[x[0], "ACTIVE"]), float(by_cert.loc[x[0], "ASSET"])))
         b = by_cert.loc[cert]
-        ok, reason = accept(c.company, sc, {"name": b.NAME, "hc": b.NAMEHCR if pd.notna(b.NAMEHCR) else "", "state": b.STALP}, a.threshold)
+        ok, reason = accept(c.company, sc, {"name": b.NAME, "hc": b.NAMEHCR if pd.notna(b.NAMEHCR) else "", "state": b.STALP, "assets_bn": float(b.ASSET) / 1e6}, a.threshold)
         base.update(score=round(sc, 1), reason=reason)
         if ok:
             base.update(cert=int(cert), institution=b.NAME, holding_company=(b.NAMEHCR if pd.notna(b.NAMEHCR) and b.NAMEHCR else None),

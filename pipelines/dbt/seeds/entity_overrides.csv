@@ -22,7 +22,7 @@ NEW YORK COMMUNITY BANCORP INC,32541.0,2011-12-01,9999-12-31,owns_bank,renamed F
 First Credit Corporation,,2011-12-01,9999-12-31,none,name collision with First Credit Bank; test row 55,human review 2026-10-15
 "Devon Financial Services, Inc.",,2011-12-01,9999-12-31,none,"Illinois consumer/title-loan company, not Devon Bank; test row 61",human review 2026-10-15
 People Trust,,2011-12-01,9999-12-31,none,"nonprofit CDFI with a former credit-union sponsorship (NCUA), not Peoples Bank; test row 75",human review 2026-10-15
-CADENCE BANK,11813.0,2011-12-01,2026-02-01,is_bank,Cadence Bank (MS) merged into Huntington 2026-02-01; test row 89,human review 2026-10-15
+CADENCE BANK,11813.0,2011-12-01,2026-01-31,is_bank,Cadence Bank (MS) merged into Huntington 2026-02-01; test row 89,human review 2026-10-15
 CADENCE BANK,6560.0,2026-02-01,9999-12-31,is_bank,successor: The Huntington National Bank; test row 89,human review 2026-10-15
 "BMW Financial Services NA, LLC",35141.0,2011-12-01,9999-12-31,owns_bank,BMW Bank of North America is its direct subsidiary; test row 98,human review 2026-10-15
 River Financial Inc.,,2011-12-01,9999-12-31,none,Bitcoin fintech; not River Financial Corp (AL) which owns River Bank & Trust; fresh-50 row 7,human review 2026-10-15

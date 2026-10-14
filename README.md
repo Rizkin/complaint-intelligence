@@ -22,6 +22,9 @@ Raw data lives outside the repo: `data/raw` is a gitignored symlink to the downl
 uv sync
 uv run python pipelines/load_raw.py            # 17 CFPB exports -> raw_complaints, reconciled per export
 uv run python pipelines/fetch_fdic.py          # FDIC institutions + quarterly financials for the seed certs
+uv run python pipelines/fetch_fdic_all.py      # all active FDIC banks + charters ended since 2023-12-31 (match candidates)
+uv run python pipelines/make_entity_overrides.py   # human-reviewed, dated company -> bank overrides (dbt seed)
+uv run python pipelines/entity_match.py        # CFPB company -> FDIC bank matcher (tables entity_match, entity_match_core)
 uv run python pipelines/replay.py --reset --days 1
 pipelines/run_daily.sh 29                      # replay one day, then incremental dbt build; repeat
 uv run python pipelines/replay_status.py       # freshness, late rows
@@ -33,6 +36,6 @@ The replay feeds `feed_complaints` one arrival day at a time. About 2% of compla
 so rerunning a day changes nothing. `fct_complaint` is incremental on the load watermark, not on
 `date_received`, which is what lets late rows through.
 
-dbt models: `stg_complaints`, `stg_fdic_institutions`, `stg_fdic_financials`, `int_complaint_entity`
-(date-aware CFPB name to FDIC cert), `fct_complaint`, `dim_institution`. Tests cover keys, accepted values,
+dbt models: `stg_complaints`, `stg_fdic_institutions`, `stg_fdic_financials`, `stg_entity_match_core`, `stg_fdic_all_institutions`,
+`int_company_entity`, `int_complaint_entity` (date-aware CFPB name to FDIC cert; see docs/entity-matching-review.md), `fct_complaint`, `dim_institution`. Tests cover keys, accepted values,
 relationships, feed reconciliation, preserved `XXXX` redactions, date order and the entity-map ranges.

@@ -39,7 +39,7 @@ ROWS = [
     ("First Credit Corporation", None, EPOCH, FAR, "none", "name collision with First Credit Bank; test row 55"),
     ("Devon Financial Services, Inc.", None, EPOCH, FAR, "none", "Illinois consumer/title-loan company, not Devon Bank; test row 61"),
     ("People Trust", None, EPOCH, FAR, "none", "nonprofit CDFI with a former credit-union sponsorship (NCUA), not Peoples Bank; test row 75"),
-    ("CADENCE BANK", 11813, EPOCH, "2026-02-01", "is_bank", "Cadence Bank (MS) merged into Huntington 2026-02-01; test row 89"),
+    ("CADENCE BANK", 11813, EPOCH, "2026-01-31", "is_bank", "Cadence Bank (MS) merged into Huntington 2026-02-01; test row 89"),
     ("CADENCE BANK", 6560, "2026-02-01", FAR, "is_bank", "successor: The Huntington National Bank; test row 89"),
     ("BMW Financial Services NA, LLC", 35141, EPOCH, FAR, "owns_bank", "BMW Bank of North America is its direct subsidiary; test row 98"),
     ("River Financial Inc.", None, EPOCH, FAR, "none", "Bitcoin fintech; not River Financial Corp (AL) which owns River Bank & Trust; fresh-50 row 7"),
@@ -57,6 +57,15 @@ known = set(con.execute("SELECT company FROM entity_match").df().company)
 missing = [r[0] for r in ROWS if r[0] not in known]
 if missing:
     raise SystemExit(f"company names not found in entity_match: {missing}")
+# guard: dated rows for one company must not overlap (int_complaint_entity would duplicate complaints)
+_by = {}
+for r in ROWS:
+    _by.setdefault(r[0], []).append((r[2], r[3]))
+for k, v in _by.items():
+    v.sort()
+    for (a_from, a_to), (b_from, b_to) in zip(v, v[1:]):
+        if b_from <= a_to:
+            raise SystemExit(f"overlap in overrides for {k}: {a_from}..{a_to} vs {b_from}..{b_to}")
 df = pd.DataFrame(ROWS, columns=["cfpb_company", "fdic_cert", "valid_from", "valid_to", "relation", "note"])
 df["source"] = "human review 2026-10-15"
 df.to_csv("pipelines/dbt/seeds/entity_overrides.csv", index=False)

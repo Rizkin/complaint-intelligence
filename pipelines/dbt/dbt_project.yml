@@ -28,6 +28,15 @@ seeds:
         valid_to: date
         role: varchar
         note: varchar
+    entity_overrides:
+      +column_types:
+        cfpb_company: varchar
+        fdic_cert: integer
+        valid_from: date
+        valid_to: date
+        relation: varchar
+        note: varchar
+        source: varchar
     company_exclusions:
       +column_types:
         cfpb_company: varchar
