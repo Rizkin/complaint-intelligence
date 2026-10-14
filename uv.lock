@@ -260,6 +260,7 @@ dependencies = [
     { name = "pandas" },
     { name = "pyarrow" },
     { name = "python-dotenv" },
+    { name = "rapidfuzz" },
     { name = "requests" },
     { name = "scikit-learn" },
 ]
@@ -274,6 +275,7 @@ requires-dist = [
     { name = "pandas", specifier = ">=3.0.6" },
     { name = "pyarrow", specifier = ">=26.0.0" },
     { name = "python-dotenv", specifier = ">=1.2.4" },
+    { name = "rapidfuzz", specifier = ">=3.14.6" },
     { name = "requests", specifier = ">=2.34.2" },
     { name = "scikit-learn", specifier = ">=1.9.1" },
 ]
