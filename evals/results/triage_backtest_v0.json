@@ -1,0 +1,54 @@
+{
+  "k": 50,
+  "days": 730,
+  "window": [
+    "2024-07-01",
+    "2026-06-30"
+  ],
+  "gap_days": 60,
+  "mean_base_rate": 0.2862,
+  "mean_daily_volume": 253.0,
+  "systems": {
+    "random": {
+      "precision_at_k": 0.2817,
+      "precision_ci95": [
+        0.2767,
+        0.2867
+      ],
+      "lift_vs_base_rate": 0.983,
+      "recall_at_k": 0.2388,
+      "recall_ci95": [
+        0.2296,
+        0.2483
+      ]
+    },
+    "issue_rate": {
+      "precision_at_k": 0.3797,
+      "precision_ci95": [
+        0.3735,
+        0.3858
+      ],
+      "lift_vs_base_rate": 1.351,
+      "recall_at_k": 0.3162,
+      "recall_ci95": [
+        0.3053,
+        0.3268
+      ]
+    },
+    "logreg": {
+      "precision_at_k": 0.4997,
+      "precision_ci95": [
+        0.493,
+        0.5061
+      ],
+      "lift_vs_base_rate": 1.784,
+      "recall_at_k": 0.4063,
+      "recall_ci95": [
+        0.3952,
+        0.4179
+      ]
+    }
+  },
+  "days_logreg_beats_base_rate": 1.0,
+  "days_issue_rate_beats_base_rate": 0.919
+}
