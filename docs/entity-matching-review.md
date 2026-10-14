@@ -97,7 +97,7 @@ Order: `fetch_fdic_all.py` -> `make_entity_overrides.py` -> `entity_match.py` ->
 | `stg_entity_match_core`, `stg_fdic_all_institutions` | staging of the matcher output and the FDIC candidate file |
 | `int_company_entity` | company-level, date-aware: overrides first, algorithm for the rest |
 | `int_complaint_entity` | per complaint: curated seed (customer/peer/peer_history) > exclusions (bureau, credit union, fintech, processor) > matcher (`other_bank`) > `non_bank` |
-| `dim_institution` | every matched bank (136 certs), not only the customer and 10 peers; size from FDIC financials where pulled, else the institution file |
+| `dim_institution` | every matched bank (137 certs), not only the customer and 10 peers; size from FDIC financials where pulled, else the institution file |
 | tests added | no overlapping override dates; every override cert exists in FDIC; no complaint dropped or duplicated; no `unmapped` role |
 
 Effect on complaints (428,172): the former `unmapped` 85,500 became `other_bank` 51,646 (125 certs) and `non_bank` 33,854. The customer, peer, peer_history,
