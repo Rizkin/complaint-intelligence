@@ -1,0 +1,32 @@
+cfpb_company,fdic_cert,valid_from,valid_to,relation,note,source
+Synovus Bank,873.0,2011-12-01,2026-01-02,is_bank,Synovus Bank (GA) merged 2026-01-02,human review 2026-10-15
+Comerica,983.0,2011-12-01,2026-02-01,is_bank,Comerica Bank (TX) charter ended 2026-02-01,human review 2026-10-15
+"WEBSTER BANK, NATIONAL ASSOCIATION",18221.0,2011-12-01,2026-08-20,is_bank,Webster Bank N.A. charter ended 2026-08-20,human review 2026-10-15
+"SANDY SPRING BANCORP, INC.",4865.0,2011-12-01,2025-04-01,owns_bank,Sandy Spring Bank charter ended 2025-04-01,human review 2026-10-15
+"PACIFIC PREMIER BANCORP, INC.",32172.0,2011-12-01,2025-09-01,owns_bank,Pacific Premier Bank N.A. charter ended 2025-09-01,human review 2026-10-15
+HSBC NORTH AMERICA HOLDINGS INC.,57890.0,2011-12-01,9999-12-31,owns_bank,"HSBC Bank USA, N.A.",human review 2026-10-15
+"Bread Financial Holdings, Inc.",57570.0,2011-12-01,9999-12-31,owns_bank,Comenity Capital Bank; FDIC lists no holding company for it,human review 2026-10-15
+"PINNACLE FINANCIAL PARTNERS, INC.",35583.0,2011-12-01,9999-12-31,owns_bank,Pinnacle Bank (TN),human review 2026-10-15
+SEACOAST BANKING CORPORATION OF FLORIDA,131.0,2011-12-01,9999-12-31,owns_bank,Seacoast National Bank,human review 2026-10-15
+"DIME COMMUNITY BANCSHARES, INC.",6976.0,2011-12-01,9999-12-31,owns_bank,Dime Commercial Bank after the 2026 rebrand (human); earlier charter history unverified,human review 2026-10-15
+"Block, Inc.",59177.0,2011-12-01,9999-12-31,owns_bank,Square Financial Services (ILC subsidiary). Cash App complaints are mostly NOT about this bank; do not use for complaints-per-assets,human review 2026-10-15
+CITY NATIONAL BANK,17281.0,2011-12-01,9999-12-31,is_bank,"assumed City National Bank (CA); the WV bank 17735 is a different, small bank. Ambiguous (36 complaints)",human review 2026-10-15
+Washington Trust Bank Financial Corporation,1281.0,2011-12-01,9999-12-31,owns_bank,Spokane WA bank per human review; not Westerly RI 23623,human review 2026-10-15
+MORGAN STANLEY & CO. LLC,,2011-12-01,9999-12-31,none,"broker-dealer sister of Morgan Stanley Bank N.A., not the bank or its owner",human review 2026-10-15
+"Halsted Financial Services, LLC.",,2011-12-01,9999-12-31,none,debt collector; name collision with Halstead Bank,human review 2026-10-15
+"Bridge IT, Inc.",,2011-12-01,9999-12-31,none,fintech (Brigit); name collision with Bridge City State Bank,human review 2026-10-15
+Lincoln Financial Services,,2011-12-01,9999-12-31,none,insurer (Lincoln National); name collision with Lincoln Savings Bank,human review 2026-10-15
+"HEARTLAND FINANCIAL USA, INC.",,2011-12-01,9999-12-31,none,"multi-bank holding acquired by UMB (2025); not HBT's Heartland Bank and Trust; low volume, unresolved",human review 2026-10-15
+"INDEPENDENT BANK GROUP, INC.",33555.0,2025-01-01,9999-12-31,owns_bank,acquired by SouthState 2025-01-01; Independent Bank merged into SouthState Bank N.A.; test row 69,human review 2026-10-15
+NEW YORK COMMUNITY BANCORP INC,32541.0,2011-12-01,9999-12-31,owns_bank,renamed Flagstar Financial (Oct 2024); Flagstar Bank N.A.; test row 72,human review 2026-10-15
+First Credit Corporation,,2011-12-01,9999-12-31,none,name collision with First Credit Bank; test row 55,human review 2026-10-15
+"Devon Financial Services, Inc.",,2011-12-01,9999-12-31,none,"Illinois consumer/title-loan company, not Devon Bank; test row 61",human review 2026-10-15
+People Trust,,2011-12-01,9999-12-31,none,"nonprofit CDFI with a former credit-union sponsorship (NCUA), not Peoples Bank; test row 75",human review 2026-10-15
+CADENCE BANK,11813.0,2011-12-01,2026-02-01,is_bank,Cadence Bank (MS) merged into Huntington 2026-02-01; test row 89,human review 2026-10-15
+CADENCE BANK,6560.0,2026-02-01,9999-12-31,is_bank,successor: The Huntington National Bank; test row 89,human review 2026-10-15
+"BMW Financial Services NA, LLC",35141.0,2011-12-01,9999-12-31,owns_bank,BMW Bank of North America is its direct subsidiary; test row 98,human review 2026-10-15
+Barker Financial LLC,,2011-12-01,9999-12-31,none,test row 7,human review 2026-10-15
+"National Commercial Services, Inc",,2011-12-01,9999-12-31,none,test row 25,human review 2026-10-15
+"United Shore Financial Services, LLC",,2011-12-01,9999-12-31,none,mortgage lender; test row 32,human review 2026-10-15
+Clayton Holdings LLC,,2011-12-01,9999-12-31,none,test row 42,human review 2026-10-15
+"AMERIFIRST FINANCIAL, INC.",,2011-12-01,9999-12-31,none,"mortgage lender, not AmeriFirst Bank (AL); test row 44",human review 2026-10-15

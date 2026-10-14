@@ -1,0 +1,337 @@
+{
+  "strict_ownership": {
+    "rows_scored": 100,
+    "unweighted": {
+      "precision": 0.7872,
+      "recall": 0.8222
+    },
+    "weighted_by_complaints": {
+      "precision": 0.9282,
+      "recall": 0.8412
+    },
+    "predicted_matches": 47,
+    "gold_banks": 45,
+    "gate_precision>=0.95": false,
+    "gate_recall>=0.90": false,
+    "errors": [
+      {
+        "cfpb_company": "Barker Financial LLC",
+        "complaints": "1",
+        "predicted_cert": "352.0",
+        "gold_cert": NaN,
+        "verdict": "Wrong - no FDIC bank exists"
+      },
+      {
+        "cfpb_company": "National Commercial Services, Inc",
+        "complaints": "1",
+        "predicted_cert": "15555.0",
+        "gold_cert": NaN,
+        "verdict": "Wrong - no FDIC bank exists"
+      },
+      {
+        "cfpb_company": "Synovus Bank",
+        "complaints": "668",
+        "predicted_cert": NaN,
+        "gold_cert": "873.0",
+        "verdict": "Wrong - different bank"
+      },
+      {
+        "cfpb_company": "HSBC NORTH AMERICA HOLDINGS INC.",
+        "complaints": "517",
+        "predicted_cert": NaN,
+        "gold_cert": "57890.0",
+        "verdict": "Wrong - different bank"
+      },
+      {
+        "cfpb_company": "United Shore Financial Services, LLC",
+        "complaints": "8",
+        "predicted_cert": "4832.0",
+        "gold_cert": NaN,
+        "verdict": "Wrong - no FDIC bank exists"
+      },
+      {
+        "cfpb_company": "Bread Financial Holdings, Inc.",
+        "complaints": "8226",
+        "predicted_cert": NaN,
+        "gold_cert": "57570.0",
+        "verdict": "Wrong - different bank"
+      },
+      {
+        "cfpb_company": "Clayton Holdings LLC",
+        "complaints": "1",
+        "predicted_cert": "8487.0",
+        "gold_cert": NaN,
+        "verdict": "Wrong - no FDIC bank exists"
+      },
+      {
+        "cfpb_company": "AMERIFIRST FINANCIAL, INC.",
+        "complaints": "1",
+        "predicted_cert": "2838.0",
+        "gold_cert": NaN,
+        "verdict": "Wrong - no FDIC bank exists"
+      },
+      {
+        "cfpb_company": "First Credit Corporation",
+        "complaints": "2",
+        "predicted_cert": "24332.0",
+        "gold_cert": NaN,
+        "verdict": "Wrong - no FDIC bank exists"
+      },
+      {
+        "cfpb_company": "Devon Financial Services, Inc.",
+        "complaints": "1",
+        "predicted_cert": "16249.0",
+        "gold_cert": NaN,
+        "verdict": "Wrong - no FDIC bank exists"
+      },
+      {
+        "cfpb_company": "INDEPENDENT BANK GROUP, INC.",
+        "complaints": "11",
+        "predicted_cert": "9712.0",
+        "gold_cert": "33555.0",
+        "verdict": "Wrong - different bank"
+      },
+      {
+        "cfpb_company": "NEW YORK COMMUNITY BANCORP INC",
+        "complaints": "351",
+        "predicted_cert": NaN,
+        "gold_cert": "32541.0",
+        "verdict": "Wrong - different bank"
+      },
+      {
+        "cfpb_company": "People Trust",
+        "complaints": "2",
+        "predicted_cert": "6544.0",
+        "gold_cert": NaN,
+        "verdict": "Wrong - no FDIC bank exists"
+      },
+      {
+        "cfpb_company": "DISCOVER BANK",
+        "complaints": "6834",
+        "predicted_cert": "5649.0",
+        "gold_cert": "4297.0",
+        "verdict": "Wrong - different bank"
+      },
+      {
+        "cfpb_company": "CADENCE BANK",
+        "complaints": "129",
+        "predicted_cert": NaN,
+        "gold_cert": "6560.0",
+        "verdict": "Wrong - different bank"
+      },
+      {
+        "cfpb_company": "BMW Financial Services NA, LLC",
+        "complaints": "8",
+        "predicted_cert": NaN,
+        "gold_cert": "35141.0",
+        "verdict": "Wrong - different bank"
+      }
+    ]
+  },
+  "broad_owner_or_partner": {
+    "rows_scored": 100,
+    "unweighted": {
+      "precision": 0.7872,
+      "recall": 0.6607
+    },
+    "weighted_by_complaints": {
+      "precision": 0.9282,
+      "recall": 0.7176
+    },
+    "predicted_matches": 47,
+    "gold_banks": 56,
+    "gate_precision>=0.95": false,
+    "gate_recall>=0.90": false,
+    "errors": [
+      {
+        "cfpb_company": "Barker Financial LLC",
+        "complaints": "1",
+        "predicted_cert": "352.0",
+        "gold_cert": NaN,
+        "verdict": "Wrong - no FDIC bank exists"
+      },
+      {
+        "cfpb_company": "National Commercial Services, Inc",
+        "complaints": "1",
+        "predicted_cert": "15555.0",
+        "gold_cert": NaN,
+        "verdict": "Wrong - no FDIC bank exists"
+      },
+      {
+        "cfpb_company": "Synovus Bank",
+        "complaints": "668",
+        "predicted_cert": NaN,
+        "gold_cert": "873.0",
+        "verdict": "Wrong - different bank"
+      },
+      {
+        "cfpb_company": "HSBC NORTH AMERICA HOLDINGS INC.",
+        "complaints": "517",
+        "predicted_cert": NaN,
+        "gold_cert": "57890.0",
+        "verdict": "Wrong - different bank"
+      },
+      {
+        "cfpb_company": "United Shore Financial Services, LLC",
+        "complaints": "8",
+        "predicted_cert": "4832.0",
+        "gold_cert": NaN,
+        "verdict": "Wrong - no FDIC bank exists"
+      },
+      {
+        "cfpb_company": "Bread Financial Holdings, Inc.",
+        "complaints": "8226",
+        "predicted_cert": NaN,
+        "gold_cert": "57570.0",
+        "verdict": "Wrong - different bank"
+      },
+      {
+        "cfpb_company": "Clayton Holdings LLC",
+        "complaints": "1",
+        "predicted_cert": "8487.0",
+        "gold_cert": NaN,
+        "verdict": "Wrong - no FDIC bank exists"
+      },
+      {
+        "cfpb_company": "AMERIFIRST FINANCIAL, INC.",
+        "complaints": "1",
+        "predicted_cert": "2838.0",
+        "gold_cert": NaN,
+        "verdict": "Wrong - no FDIC bank exists"
+      },
+      {
+        "cfpb_company": "Bright Capital Inc",
+        "complaints": "23",
+        "predicted_cert": NaN,
+        "gold_cert": NaN,
+        "verdict": "Right"
+      },
+      {
+        "cfpb_company": "First Credit Corporation",
+        "complaints": "2",
+        "predicted_cert": "24332.0",
+        "gold_cert": NaN,
+        "verdict": "Wrong - no FDIC bank exists"
+      },
+      {
+        "cfpb_company": "Populus Financial Group, Inc. (F/K/A Ace Cash Express)",
+        "complaints": "7",
+        "predicted_cert": NaN,
+        "gold_cert": NaN,
+        "verdict": "Right"
+      },
+      {
+        "cfpb_company": "Devon Financial Services, Inc.",
+        "complaints": "1",
+        "predicted_cert": "16249.0",
+        "gold_cert": NaN,
+        "verdict": "Wrong - no FDIC bank exists"
+      },
+      {
+        "cfpb_company": "INDEPENDENT BANK GROUP, INC.",
+        "complaints": "11",
+        "predicted_cert": "9712.0",
+        "gold_cert": "33555.0",
+        "verdict": "Wrong - different bank"
+      },
+      {
+        "cfpb_company": "NEW YORK COMMUNITY BANCORP INC",
+        "complaints": "351",
+        "predicted_cert": NaN,
+        "gold_cert": "32541.0",
+        "verdict": "Wrong - different bank"
+      },
+      {
+        "cfpb_company": "People Trust",
+        "complaints": "2",
+        "predicted_cert": "6544.0",
+        "gold_cert": NaN,
+        "verdict": "Wrong - no FDIC bank exists"
+      },
+      {
+        "cfpb_company": "Imprint Payments, Inc.",
+        "complaints": "318",
+        "predicted_cert": NaN,
+        "gold_cert": NaN,
+        "verdict": "Right"
+      },
+      {
+        "cfpb_company": "FinCo Services Inc DBA Current",
+        "complaints": "1348",
+        "predicted_cert": NaN,
+        "gold_cert": NaN,
+        "verdict": "Right"
+      },
+      {
+        "cfpb_company": "DISCOVER BANK",
+        "complaints": "6834",
+        "predicted_cert": "5649.0",
+        "gold_cert": "4297.0",
+        "verdict": "Wrong - different bank"
+      },
+      {
+        "cfpb_company": "Revolut Technologies Inc.",
+        "complaints": "199",
+        "predicted_cert": NaN,
+        "gold_cert": NaN,
+        "verdict": "Right"
+      },
+      {
+        "cfpb_company": "Chime Financial Inc",
+        "complaints": "15484",
+        "predicted_cert": NaN,
+        "gold_cert": NaN,
+        "verdict": "Right"
+      },
+      {
+        "cfpb_company": "CADENCE BANK",
+        "complaints": "129",
+        "predicted_cert": NaN,
+        "gold_cert": "6560.0",
+        "verdict": "Wrong - different bank"
+      },
+      {
+        "cfpb_company": "CNG FINANCIAL CORPORATION",
+        "complaints": "7",
+        "predicted_cert": NaN,
+        "gold_cert": NaN,
+        "verdict": "Right"
+      },
+      {
+        "cfpb_company": "OPORTUN FINANCIAL CORPORATION",
+        "complaints": "53",
+        "predicted_cert": NaN,
+        "gold_cert": NaN,
+        "verdict": "Right"
+      },
+      {
+        "cfpb_company": "Bilt Technologies, Inc.",
+        "complaints": "570",
+        "predicted_cert": NaN,
+        "gold_cert": NaN,
+        "verdict": "Right"
+      },
+      {
+        "cfpb_company": "Exto Inc.",
+        "complaints": "158",
+        "predicted_cert": NaN,
+        "gold_cert": NaN,
+        "verdict": "Right"
+      },
+      {
+        "cfpb_company": "Opportunity Financial, LLC",
+        "complaints": "8",
+        "predicted_cert": NaN,
+        "gold_cert": NaN,
+        "verdict": "Right"
+      },
+      {
+        "cfpb_company": "BMW Financial Services NA, LLC",
+        "complaints": "8",
+        "predicted_cert": NaN,
+        "gold_cert": "35141.0",
+        "verdict": "Wrong - different bank"
+      }
+    ]
+  }
+}
