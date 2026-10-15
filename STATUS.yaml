@@ -12,8 +12,9 @@
 # Owner enum: claude-code | zcode | human | unassigned
 
 schema_version: 1
-updated_at: 2026-10-12T20:35+05:30
-updated_by: zcode
+updated_at: 2026-10-15T00:00+05:30
+updated_by: claude-code
+paused: {since: 2026-10-15, by: human, summary: docs/PROJECT-STATUS.md, note: "owner paused the project mid Week 1; do not start new work without the owner's go-ahead"}
 
 plan:
   source: "D:\\foundary\\3-Week FDE Plan — Complaint Intelligence Flagship (1).pdf (28 pages, local to Windows host only)"
@@ -198,3 +199,4 @@ log:
   - "2026-10-15 claude-code: W1-TUE-03 measured: v1 entity matcher misses Gate 1 (strict precision 0.787, recall 0.822 on 100 human-verified pairs). 28+ human-reviewed overrides saved; v2 + fresh 50-pair test is the next step."
   - "2026-10-15 claude-code: entity matcher v2 scored on fresh 50: P 0.900 R 0.947 (recall gate met, precision 1 error short). v2.1 state rule added post-hoc. Next: wire entity_match into dbt."
   - "2026-10-15 claude-code: entity_match wired into dbt (int_company_entity, int_complaint_entity, dim_institution now 137 certs; 54/54 tests; customer/peer slice unchanged; unmapped 85,500 -> other_bank 51,646 + non_bank 33,854). Found and fixed matcher v2 regression (Citibank N.A., Santander) as v2.2, post-hoc."
+  - "2026-10-15 claude-code: PROJECT PAUSED by owner. Status hand-off written to docs/PROJECT-STATUS.md. Resume order: W1-THU-01 audit (human), D0-05 GCP billing (human), W1-FRI-01 AIP Logic, Gate 1 review."
