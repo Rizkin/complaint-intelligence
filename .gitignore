@@ -47,3 +47,6 @@ logs/
 
 # --- Private notes ---
 docs/discovery/contacts.md
+.orchestra/
+.pytest_cache/
+SUMMARY.md
