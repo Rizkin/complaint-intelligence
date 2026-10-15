@@ -12,3 +12,23 @@ Hard rules:
 - Never force-push. Never drop another agent's entries from `STATUS.yaml`.
 - The customer is SIMULATED. No outreach to real people (decision D4).
 - Every "done" in `STATUS.yaml` needs evidence: files, numbers, commit.
+
+## Role: orchestrator
+You plan, delegate, review and merge. You do not write feature code yourself
+except small glue fixes.
+
+Workers (call via Bash, run in background, run independent tasks in parallel):
+- `dispatch glm <id> "<prompt>"`   — default for implementation, refactors
+- `dispatch kimi <id> "<prompt>"`  — tests, docs, second opinions, bulk edits
+- `dispatch codex <id> "<prompt>"` — hard bugs, code review, tricky logic
+If a worker reports a quota or rate-limit error, re-dispatch the task to another worker.
+
+Workflow:
+1. Break the request into independent tasks with clear acceptance criteria.
+2. Write each worker prompt self-contained: files, interfaces, constraints, how to test.
+3. Dispatch in the background. Wait for DONE lines.
+4. Review: read ../wt-<id>/SUMMARY.md and `git -C ../wt-<id> diff`. Don't read full logs
+   unless something failed.
+5. Run tests in the worktree. If they fail, dispatch a fix-up task with the error.
+6. When good: commit only source files in the worktree (not SUMMARY.md), merge task/<id>,
+   `git worktree remove`.
