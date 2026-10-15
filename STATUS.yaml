@@ -120,10 +120,7 @@ gotchas:
   - "Only one writer on data/cfpb.duckdb at a time (replay.py and dbt both write)."
   - "python-dotenv find_dotenv() fails under stdin scripts; use load_dotenv('.env')."
 
-locks:
-  - {path: tests/, owner: claude-code, since: 2026-10-15, task: T-REPLAY-TESTS}
-  - {path: pyproject.toml, owner: claude-code, since: 2026-10-15, task: T-REPLAY-TESTS}
-# e.g. - {path: agent/, owner: zcode, since: 2026-10-13T09:00+05:30, task: W2-TUE-01}
+locks: []  # e.g. - {path: agent/, owner: zcode, since: 2026-10-13T09:00+05:30, task: W2-TUE-01}
 
 tasks:
   # ---------- Day 0 ----------
@@ -167,7 +164,7 @@ tasks:
   - {id: W1-SAT-03, title: "Applications batch 1 (10, no referrals)", status: pending, owner: human}
   - {id: W1-SAT-04, title: "Gate 1 review", status: pending, due: 2026-10-17}
 
-  - {id: T-REPLAY-TESTS, title: "Unit tests for pipelines/replay.py idempotent upsert (owner go-ahead given in chat 2026-10-15, narrow exception to pause)", status: in_progress, owner: claude-code, worker: kimi}
+  - {id: T-REPLAY-TESTS, title: "Unit tests for pipelines/replay.py idempotent upsert (owner go-ahead given in chat 2026-10-15, narrow exception to pause)", status: dropped, owner: claude-code, note: "stopped by owner before review; worktree and branch removed, nothing merged"}
 
   # ---------- Week 2 (summary) ----------
   - {id: W2-MON, title: "Reg corpus chunking (XML already on disk), 60-item regulation golden set (human), Regulation Section objects", status: pending}
