@@ -12,7 +12,7 @@
 # Owner enum: claude-code | zcode | human | unassigned
 
 schema_version: 1
-updated_at: 2026-10-15T00:00+05:30
+updated_at: 2026-10-19T12:00+05:30
 updated_by: claude-code
 paused: {since: 2026-10-15, by: human, summary: docs/PROJECT-STATUS.md, note: "owner paused the project mid Week 1; do not start new work without the owner's go-ahead"}
 
@@ -37,6 +37,7 @@ decisions:
   - {id: D5, date: 2026-10-12, what: "datasets never committed to GitHub; data reproducible via README commands"}
   - {id: D6, date: 2026-10-12, what: "scope = products {Checking or savings account, Credit card}, date_received >= 2024-01-01"}
   - {id: D7, date: 2026-10-12, what: "classifier held-out month must be in 2026-04..2026-06 (narrative coverage); triage backtest window ends 2026-06-30 (outcomes right-censored after)"}
+  - {id: D8, date: 2026-10-19, what: "adopt six added deliverables GAP-01..GAP-06 (engagement pack, tenant scoping + kill switch, text-to-SQL eval, approach memo, own MCP server, data-handling note + incident drill); spec in docs/06-added-deliverables.md. Customer artefacts stay SIMULATED, no outreach (D4 unchanged); FinanceBench then Kaggle are cut first to make room."}
 
 gate_criteria_modified:  # original plan text -> replacement (from D4). Source: docs/plan-changes.md
   G1: {was: "10 discovery requests sent, 2 calls booked, 10 applications", now: "6 desk-research notes, 1 simulated session, 10 applications"}
@@ -174,6 +175,14 @@ tasks:
   - {id: W2-FRI, title: "Guardrails, failure tests, evals/REPORT.md before/after; FinanceBench no-retrieval baseline", status: pending}
   - {id: W2-SAT, title: "FinanceBench naive vs improved RAG; mock stakeholder review (SIMULATED); applications batch 2; gate 2", status: pending}
 
+  # ---------- Added deliverables (2026-10-19), spec: docs/06-added-deliverables.md; all PLANNED, project is paused ----------
+  - {id: GAP-01, title: "Engagement pack (SIMULATED): SoW, pricing options, stakeholders + RACI, DECISIONS.md, handover/acceptance", status: pending, effort_h: 4, slot: "FinanceBench slot (cut-first)", out: docs/engagement/, accept: "5 files; SoW acceptance criteria = STATUS.yaml gate numbers; each file labelled SIMULATED and cites a repo number"}
+  - {id: GAP-02, title: "Tenant scoping, kill switch, audit log, per-request budgets for the agent", status: pending, effort_h: 3, slot: "agent day (W2-WED)", depends: [W2-WED], out: agent/, accept: "5 tests pass in CI: peer-bank leak blocked, injection cannot change scope, WRITE_ENABLED=false stops propose-action, every tool call logged, caps enforced"}
+  - {id: GAP-03, title: "Governed-metrics-query (text-to-SQL) eval inside the 40-question golden set: execution accuracy, failure breakdown, read-only role + row/timeout/cost caps", status: pending, effort_h: 3, slot: "agent day (W2-WED)", depends: [W2-WED], out: evals/, accept: "report with accuracy and failure breakdown; destructive SQL rejected by test; caps enforced by tests"}
+  - {id: GAP-04, title: "Approach comparison memo: zero-shot LLM vs TF-IDF+LR vs decision model vs embeddings+LR (+AIP Logic if available) on macro-F1, cost, latency; when not to use an agent", status: pending, effort_h: 4, slot: "FinanceBench slot (cut-first)", out: docs/07-approach-comparison.md, accept: "every number traces to a saved results file; one-line recommendation with a condition per approach"}
+  - {id: GAP-05, title: "Own MCP server (FastMCP) over the 4 agent tools with per-tool permissions", status: pending, effort_h: 3, slot: "Week 3 reliability day (W3-WED)", depends: [GAP-02], out: agent/mcp_server.py, accept: "test client lists only permitted tools; tools work within scope; propose-action off when write flag off"}
+  - {id: GAP-06, title: "Data-handling note (DPDP + US context, cited or NOT VERIFIED) and a staged incident drill with blameless RCA", status: pending, effort_h: 3, slot: "Week 3 reliability day (W3-WED)", out: docs/security/, accept: "drill actually run with logs; RCA names root cause and >= 2 follow-ups; every legal claim cites primary text or is NOT VERIFIED"}
+
   # ---------- Week 3 (summary) ----------
   - {id: W3-MON, title: "Dockerfile, Artifact Registry, Terraform Cloud Run (0-1 instances), IAM-only, smoke tests, teardown", status: pending, blocker: D0-05}
   - {id: W3-TUE, title: "GitHub Actions CI + eval gate (50-item smoke, fail on >3pt drop); OpenTelemetry; dashboard", status: pending}
@@ -202,3 +211,4 @@ log:
   - "2026-10-15 claude-code: entity matcher v2 scored on fresh 50: P 0.900 R 0.947 (recall gate met, precision 1 error short). v2.1 state rule added post-hoc. Next: wire entity_match into dbt."
   - "2026-10-15 claude-code: entity_match wired into dbt (int_company_entity, int_complaint_entity, dim_institution now 137 certs; 54/54 tests; customer/peer slice unchanged; unmapped 85,500 -> other_bank 51,646 + non_bank 33,854). Found and fixed matcher v2 regression (Citibank N.A., Santander) as v2.2, post-hoc."
   - "2026-10-15 claude-code: PROJECT PAUSED by owner. Status hand-off written to docs/PROJECT-STATUS.md. Resume order: W1-THU-01 audit (human), D0-05 GCP billing (human), W1-FRI-01 AIP Logic, Gate 1 review."
+  - "2026-10-19 claude-code: added decision D8 and tasks GAP-01..GAP-06 (docs/06-added-deliverables.md) after a gap review of the plan against what Forward Deployed roles screen for. Planning only: project stays paused; nothing started."
